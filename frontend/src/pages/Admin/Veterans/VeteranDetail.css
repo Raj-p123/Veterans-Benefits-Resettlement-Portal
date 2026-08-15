@@ -1,0 +1,106 @@
+/* Veteran Detail Dossier Styles */
+
+.veteran-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.veteran-back-link:hover {
+  text-decoration: underline;
+}
+
+.veteran-action-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.veteran-dossier-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 1.5rem;
+}
+
+.dossier-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.dossier-card {
+  background: #ffffff;
+  border: 1px solid var(--color-border-main);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-card);
+}
+
+.dossier-card-title {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--color-slate-900);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.dossier-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.dossier-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+  padding: 0.375rem 0;
+  border-bottom: 1px dashed var(--color-border-subtle);
+}
+
+.dossier-info-row:last-child {
+  border-bottom: none;
+}
+
+.dossier-label {
+  color: var(--color-slate-500);
+  font-weight: 500;
+}
+
+.dossier-value {
+  color: var(--color-slate-900);
+  font-weight: 600;
+  text-align: right;
+}
+
+.dossier-sub-item {
+  padding: 0.75rem;
+  background: #f8fafc;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-subtle);
+}
+
+.dossier-docs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.dossier-doc-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: #f8fafc;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  flex-wrap: wrap;
+}

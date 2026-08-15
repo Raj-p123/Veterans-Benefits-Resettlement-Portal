@@ -1,0 +1,98 @@
+.about-header-section {
+  background-color: var(--color-primary-900);
+  color: #ffffff;
+  padding: var(--space-12) 0;
+  text-align: center;
+  border-bottom: 2px solid var(--color-accent-600);
+}
+
+.about-header-title {
+  color: #ffffff;
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: var(--space-2);
+}
+
+.about-header-sub {
+  color: var(--color-slate-200);
+  font-size: var(--font-size-base);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-10);
+  margin-top: var(--space-8);
+}
+
+.about-card {
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border-main);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-card);
+}
+
+.about-card-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-primary-900);
+  margin-bottom: var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.about-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.about-list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+}
+
+.about-list-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--color-accent-600);
+}
+
+.vision-box {
+  margin-top: var(--space-10);
+  background: linear-gradient(135deg, var(--color-primary-50) 0%, var(--color-bg-surface) 100%);
+  border: 1px solid var(--color-primary-100);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  text-align: center;
+}
+
+.vision-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--color-primary-900);
+  margin-bottom: var(--space-3);
+}
+
+.vision-text {
+  font-size: var(--font-size-base);
+  color: var(--color-slate-700);
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: var(--line-height-relaxed);
+}
+
+@media (max-width: 768px) {
+  .about-grid {
+    grid-template-columns: 1fr;
+  }
+}

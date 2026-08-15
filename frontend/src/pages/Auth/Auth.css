@@ -1,0 +1,111 @@
+/* ==========================================================================
+   AUTHENTICATION PAGES (LOGIN & REGISTER) — CLEAN SAAS STYLING
+   ========================================================================== */
+
+.auth-page-wrapper {
+  min-height: calc(100vh - 120px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6) var(--space-4);
+  background-color: var(--color-bg-canvas);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 440px;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-6);
+}
+
+.auth-card-wide {
+  max-width: 520px;
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: var(--space-5);
+}
+
+.auth-icon-badge {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-navy-dark);
+  color: #FFFFFF;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-2);
+}
+
+.auth-title {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-text-main);
+  margin-bottom: 2px;
+}
+
+.auth-subtitle {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.role-selector-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.role-choice-card {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: all var(--transition-fast);
+  background-color: var(--color-bg-canvas);
+}
+
+.role-choice-card:hover {
+  border-color: var(--color-border-strong);
+  background-color: #FFFFFF;
+}
+
+.role-choice-card.selected {
+  border-color: var(--color-accent-blue);
+  background-color: var(--color-accent-blue-light);
+}
+
+.role-choice-title {
+  font-weight: 600;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-main);
+  margin-top: 2px;
+}
+
+.role-choice-desc {
+  font-size: 0.6875rem;
+  color: var(--color-text-secondary);
+}
+
+.auth-footer-text {
+  text-align: center;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-5);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.auth-footer-text a {
+  color: var(--color-accent-blue);
+  font-weight: 600;
+}

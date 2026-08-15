@@ -1,0 +1,165 @@
+/* ==========================================================================
+   APPLICATIONS LIST — CLEAN SAAS STYLING
+   ========================================================================== */
+
+.my-apps-page-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.my-apps-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.my-apps-metrics-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: var(--space-3);
+}
+
+.metric-strip-card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.metric-strip-label {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.metric-strip-count {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+}
+
+/* Filters & Search Toolbar */
+.my-apps-toolbar {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-5);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.apps-status-tabs {
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.app-status-tab-btn {
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg-canvas);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+}
+
+.app-status-tab-btn:hover {
+  background-color: var(--color-bg-card);
+  color: var(--color-text-main);
+  border-color: var(--color-border-strong);
+}
+
+.app-status-tab-btn.active {
+  background-color: var(--color-navy-dark);
+  border-color: var(--color-navy-dark);
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+/* Applications Table / Cards */
+.apps-table-card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.apps-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+.apps-table th {
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-secondary);
+  background-color: var(--color-bg-canvas);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.apps-table td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border-subtle);
+  vertical-align: middle;
+}
+
+.apps-table tr:hover td {
+  background-color: var(--color-bg-canvas);
+}
+
+.app-id-cell {
+  font-family: monospace;
+  font-weight: 600;
+  color: var(--color-accent-blue);
+}
+
+.app-scheme-title-text {
+  font-weight: 600;
+  color: var(--color-text-main);
+}
+
+@media (max-width: 768px) {
+  .apps-table-card {
+    border: none;
+    background: transparent;
+    box-shadow: none;
+  }
+  .apps-table, .apps-table thead, .apps-table tbody, .apps-table th, .apps-table td, .apps-table tr {
+    display: block;
+  }
+  .apps-table thead {
+    display: none;
+  }
+  .apps-table tr {
+    background-color: #FFFFFF;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    margin-bottom: var(--space-3);
+    box-shadow: var(--shadow-card);
+  }
+  .apps-table td {
+    padding: var(--space-1) 0;
+    border-bottom: none;
+  }
+}

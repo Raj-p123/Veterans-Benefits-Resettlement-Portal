@@ -1,0 +1,512 @@
+/* ==========================================================================
+   AUTHENTICATED PORTAL LAYOUT — HAMBURGER MENU + SLIDE-IN DRAWER
+   Theme: Full-Width SaaS Canvas + Slide-in Dark Navy Drawer
+   ========================================================================== */
+
+.authenticated-portal-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-bg-canvas);
+  color: var(--color-text-main);
+  position: relative;
+  width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   1. TOP HEADER (Sticky Minimal White Bar)
+   -------------------------------------------------------------------------- */
+.portal-top-header {
+  height: 64px;
+  background-color: #FFFFFF;
+  border-bottom: 1px solid var(--color-border);
+  padding: 0 var(--space-6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  width: 100%;
+}
+
+.portal-header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* Hamburger Menu Button */
+.portal-hamburger-btn {
+  background: var(--color-bg-canvas);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-main);
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.portal-hamburger-btn:hover {
+  background-color: var(--color-bg-card);
+  border-color: var(--color-border-strong);
+  color: var(--color-accent-blue);
+}
+
+/* Brand Link next to Hamburger */
+.portal-brand-header-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  text-decoration: none;
+  color: var(--color-navy-dark);
+}
+
+.portal-header-brand-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-navy-dark);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.portal-header-brand-title {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--color-navy-dark);
+}
+
+/* Center Search Bar */
+.portal-header-center {
+  flex: 1;
+  max-width: 440px;
+  margin: 0 var(--space-4);
+}
+
+.portal-search-form {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.portal-search-icon {
+  position: absolute;
+  left: 0.75rem;
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+.portal-search-input {
+  width: 100%;
+  height: 36px;
+  background-color: var(--color-bg-canvas);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0 0.75rem 0 2.25rem;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-main);
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.portal-search-input:focus {
+  background-color: #FFFFFF;
+  border-color: var(--color-accent-blue);
+  box-shadow: 0 0 0 2px rgba(20, 110, 245, 0.1);
+}
+
+.portal-search-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* Right Controls */
+.portal-header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* Profile Pill & Dropdown */
+.portal-profile-menu-container {
+  position: relative;
+}
+
+.portal-profile-pill {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  padding: 3px 8px 3px 3px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.portal-profile-pill:hover {
+  background-color: var(--color-bg-canvas);
+  border-color: var(--color-border-strong);
+}
+
+.portal-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: var(--color-navy-dark);
+  color: #FFFFFF;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.portal-user-meta-text {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  line-height: 1.1;
+  padding-right: 2px;
+}
+
+.portal-user-name {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-text-main);
+}
+
+.portal-user-role {
+  font-size: 0.6875rem;
+  color: var(--color-text-secondary);
+}
+
+.portal-dropdown-arrow {
+  color: var(--color-text-muted);
+}
+
+.portal-dropdown-card {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 220px;
+  background-color: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-2);
+  z-index: 1000;
+  animation: fadeInDropdown 0.15s ease-out;
+}
+
+.portal-dropdown-user-info {
+  padding: var(--space-2) var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.portal-dropdown-user-info strong {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-main);
+}
+
+.portal-dropdown-user-info small {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.portal-dropdown-divider {
+  height: 1px;
+  background-color: var(--color-border-subtle);
+  margin: var(--space-1) 0;
+}
+
+.portal-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0.45rem 0.75rem;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  text-decoration: none;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.portal-dropdown-item:hover {
+  background-color: var(--color-bg-canvas);
+  color: var(--color-text-main);
+}
+
+.portal-dropdown-item.text-danger {
+  color: var(--color-status-error-text);
+}
+
+.portal-dropdown-item.text-danger:hover {
+  background-color: var(--color-status-error-bg);
+}
+
+.portal-guest-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* --------------------------------------------------------------------------
+   2. SLIDE-IN DARK NAVY DRAWER (270px Width, Hidden by Default)
+   -------------------------------------------------------------------------- */
+.portal-slide-drawer {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 270px;
+  background-color: var(--color-navy-dark);
+  color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  box-shadow: none;
+  transform: translateX(-100%);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.portal-slide-drawer.drawer-visible {
+  transform: translateX(0);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.drawer-header {
+  height: 64px;
+  padding: 0 var(--space-5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.drawer-brand-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  text-decoration: none;
+  color: #FFFFFF;
+}
+
+.drawer-brand-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-accent-blue);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.drawer-brand-title {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-md);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #FFFFFF;
+}
+
+.drawer-close-btn {
+  background: none;
+  border: none;
+  color: #94A3B8;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.drawer-close-btn:hover {
+  color: #FFFFFF;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Drawer Navigation Links */
+.drawer-nav {
+  flex: 1;
+  padding: var(--space-4) var(--space-3);
+  overflow-y: auto;
+}
+
+.drawer-nav-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.drawer-nav-item {
+  width: 100%;
+}
+
+.drawer-nav-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-md);
+  color: #94A3B8;
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  transition: all var(--transition-fast);
+}
+
+.drawer-nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+  color: #FFFFFF;
+}
+
+.drawer-nav-link.active {
+  background-color: var(--color-accent-blue);
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+.drawer-nav-icon {
+  flex-shrink: 0;
+  color: currentColor;
+}
+
+.drawer-nav-label {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.drawer-nav-badge {
+  background-color: #EF4444;
+  color: #FFFFFF;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+}
+
+/* Drawer Footer */
+.drawer-footer {
+  padding: var(--space-4);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.drawer-logout-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-md);
+  background-color: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #FCA5A5;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.drawer-logout-btn:hover {
+  background-color: #EF4444;
+  color: #FFFFFF;
+  border-color: #EF4444;
+}
+
+.drawer-helpline {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.helpline-title {
+  font-size: 0.5625rem;
+  font-weight: 700;
+  color: #94A3B8;
+  letter-spacing: 0.05em;
+}
+
+.helpline-number {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+/* --------------------------------------------------------------------------
+   3. BACKDROP OVERLAY
+   -------------------------------------------------------------------------- */
+.portal-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(7, 27, 58, 0.45);
+  backdrop-filter: blur(2px);
+  z-index: 999;
+  animation: fadeInDropdown 0.15s ease-out;
+}
+
+/* --------------------------------------------------------------------------
+   4. FULL-WIDTH CANVAS
+   -------------------------------------------------------------------------- */
+.portal-main-canvas {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.portal-canvas-inner {
+  width: 100%;
+  max-width: var(--max-content-width);
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-6) var(--space-12);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .portal-header-center {
+    display: none;
+  }
+  .portal-user-meta-text {
+    display: none;
+  }
+  .portal-profile-pill {
+    padding: 2px;
+    border-radius: 50%;
+  }
+  .portal-dropdown-arrow {
+    display: none;
+  }
+  .portal-canvas-inner {
+    padding: var(--space-4) var(--space-4) var(--space-8);
+  }
+}

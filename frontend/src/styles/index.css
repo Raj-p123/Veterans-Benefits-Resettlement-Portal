@@ -1,0 +1,269 @@
+/* ==========================================================================
+   VETERANS BENEFITS & RESETTLEMENT PORTAL — DESIGN SYSTEM TOKENS
+   Theme: Modern SaaS + Veteran Support Platform (Clean, Minimal, Professional)
+   ========================================================================== */
+
+:root {
+  /* Primary & Secondary Navy (Sidebar & High Contrast Surfaces) */
+  --color-navy-dark: #071B3A;
+  --color-navy-secondary: #0B2A52;
+  --color-navy-surface: #0F3566;
+  --color-navy-light: #16437E;
+  
+  /* Primary Brand Accent (Blue) */
+  --color-accent-blue: #146EF5;
+  --color-accent-blue-hover: #0D5DD6;
+  --color-accent-blue-active: #094CB5;
+  --color-accent-blue-light: #EFF6FF;
+  --color-accent-blue-tint: #DBEAFE;
+
+  /* Surfaces & Backgrounds */
+  --color-bg-canvas: #F7F9FC;
+  --color-bg-card: #FFFFFF;
+  --color-bg-card-hover: #FAFCFF;
+  --color-bg-input: #FFFFFF;
+  --color-bg-subtle: #F1F5F9;
+  --color-bg-muted: #E2E8F0;
+
+  /* Text & Labels */
+  --color-text-main: #111827;
+  --color-text-secondary: #64748B;
+  --color-text-muted: #94A3B8;
+  --color-text-inverse: #FFFFFF;
+  --color-text-link: #146EF5;
+
+  /* Borders & Dividers */
+  --color-border: #E5E7EB;
+  --color-border-subtle: #F1F5F9;
+  --color-border-strong: #D1D5DB;
+  --color-border-focus: #146EF5;
+
+  /* Functional Status Colors (Soft, Modern Tones) */
+  --color-status-success: #10B981;
+  --color-status-success-bg: #ECFDF5;
+  --color-status-success-text: #047857;
+  --color-status-success-border: #A7F3D0;
+
+  --color-status-warning: #F59E0B;
+  --color-status-warning-bg: #FEF3C7;
+  --color-status-warning-text: #B45309;
+  --color-status-warning-border: #FDE68A;
+
+  --color-status-error: #EF4444;
+  --color-status-error-bg: #FEF2F2;
+  --color-status-error-text: #B91C1C;
+  --color-status-error-border: #FECACA;
+
+  --color-status-info: #146EF5;
+  --color-status-info-bg: #EFF6FF;
+  --color-status-info-text: #1D4ED8;
+  --color-status-info-border: #BFDBFE;
+
+  /* Legacy Color Aliases (for seamless backward compatibility) */
+  --color-primary-950: var(--color-navy-dark);
+  --color-primary-900: var(--color-navy-secondary);
+  --color-primary-800: var(--color-navy-surface);
+  --color-primary-700: var(--color-navy-light);
+  --color-primary-600: var(--color-accent-blue);
+  --color-primary-500: var(--color-accent-blue);
+  --color-primary-400: #60A5FA;
+  --color-primary-100: var(--color-accent-blue-light);
+  --color-primary-50:  #F8FAFC;
+
+  --color-slate-900: #0F172A;
+  --color-slate-800: #1E293B;
+  --color-slate-700: #334155;
+  --color-slate-600: #475569;
+  --color-slate-500: #64748B;
+  --color-slate-400: #94A3B8;
+  --color-slate-300: #CBD5E1;
+  --color-slate-200: #E2E8F0;
+  --color-slate-100: #F1F5F9;
+  --color-slate-50:  #F8FAFC;
+
+  --color-bg-body: var(--color-bg-canvas);
+  --color-bg-surface: var(--color-bg-card);
+  --color-text-primary: var(--color-text-main);
+  --color-border-main: var(--color-border);
+
+  /* Typography */
+  --font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-family-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.8125rem;  /* 13px */
+  --font-size-base: 0.875rem; /* 14px */
+  --font-size-md: 0.9375rem;  /* 15px */
+  --font-size-lg: 1rem;       /* 16px */
+  --font-size-xl: 1.125rem;   /* 18px */
+  --font-size-2xl: 1.25rem;   /* 20px */
+  --font-size-3xl: 1.5rem;    /* 24px */
+  --font-size-4xl: 1.875rem;  /* 30px */
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.6;
+
+  /* Border Radii */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* Shadows (Soft & Subtle) */
+  --shadow-xs: 0 1px 2px rgba(17, 24, 39, 0.04);
+  --shadow-sm: 0 1px 3px rgba(17, 24, 39, 0.05), 0 1px 2px rgba(17, 24, 39, 0.03);
+  --shadow-md: 0 4px 6px -1px rgba(17, 24, 39, 0.06), 0 2px 4px -2px rgba(17, 24, 39, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(17, 24, 39, 0.07), 0 4px 6px -4px rgba(17, 24, 39, 0.03);
+  --shadow-card: var(--shadow-sm);
+  --shadow-card-hover: var(--shadow-md);
+
+  /* Spacing System */
+  --space-1: 0.25rem; /* 4px */
+  --space-2: 0.5rem;  /* 8px */
+  --space-3: 0.75rem; /* 12px */
+  --space-4: 1rem;    /* 16px */
+  --space-5: 1.25rem; /* 20px */
+  --space-6: 1.5rem;  /* 24px */
+  --space-8: 2rem;    /* 32px */
+  --space-10: 2.5rem; /* 40px */
+  --space-12: 3rem;   /* 48px */
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Layout Widths */
+  --sidebar-width: 250px;
+  --sidebar-collapsed-width: 72px;
+  --header-height: 64px;
+  --max-content-width: 1320px;
+}
+
+/* Base Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: var(--font-family-base);
+  font-size: 16px;
+  color: var(--color-text-main);
+  background-color: var(--color-bg-canvas);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  line-height: var(--line-height-normal);
+  color: var(--color-text-main);
+  background-color: var(--color-bg-canvas);
+  font-size: var(--font-size-base);
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Typography Scale */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-heading);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  color: var(--color-text-main);
+  letter-spacing: -0.015em;
+}
+
+h1 { font-size: var(--font-size-3xl); font-weight: 800; }
+h2 { font-size: var(--font-size-2xl); font-weight: 700; }
+h3 { font-size: var(--font-size-xl); font-weight: 700; }
+h4 { font-size: var(--font-size-lg); font-weight: 600; }
+h5 { font-size: var(--font-size-md); font-weight: 600; }
+h6 { font-size: var(--font-size-sm); font-weight: 600; }
+
+p {
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+  font-size: var(--font-size-base);
+}
+
+small {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+a {
+  color: var(--color-accent-blue);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-accent-blue-hover);
+}
+
+/* Standard Reusable Card Styling */
+.portal-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-card);
+  transition: all var(--transition-fast);
+}
+
+.portal-card-interactive:hover {
+  border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-1px);
+}
+
+/* Focus Visible Accessibility */
+:focus-visible {
+  outline: 2px solid var(--color-accent-blue);
+  outline-offset: 2px;
+}
+
+/* Container Utilities */
+.portal-container {
+  width: 100%;
+  max-width: var(--max-content-width);
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+}
+
+/* Scrollbar Customization */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}

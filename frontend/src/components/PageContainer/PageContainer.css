@@ -1,0 +1,32 @@
+.page-container {
+  width: 100%;
+  max-width: var(--max-width-container);
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-4);
+}
+
+.page-container-narrow {
+  max-width: var(--max-width-narrow);
+}
+
+.page-container-wide {
+  max-width: var(--max-width-wide);
+}
+
+.page-header {
+  margin-bottom: var(--space-8);
+}
+
+.page-title {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-3xl);
+  font-weight: 800;
+  color: var(--color-primary-950);
+  margin-bottom: var(--space-2);
+}
+
+.page-subtitle {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  max-width: 700px;
+}

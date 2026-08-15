@@ -1,0 +1,26 @@
+/* ==========================================================================
+   PUBLIC PAGE LAYOUT — CLEAN TOP NAVBAR + FULL-WIDTH CANVAS + FOOTER
+   ========================================================================== */
+
+.public-page-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-bg-canvas);
+  color: var(--color-text-main);
+  width: 100%;
+}
+
+.public-page-content {
+  flex: 1;
+  width: 100%;
+  max-width: var(--max-content-width);
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-6) var(--space-12);
+}
+
+@media (max-width: 640px) {
+  .public-page-content {
+    padding: var(--space-4) var(--space-4) var(--space-8);
+  }
+}

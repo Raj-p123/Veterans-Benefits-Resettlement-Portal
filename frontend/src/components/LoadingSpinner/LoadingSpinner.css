@@ -1,0 +1,27 @@
+.spinner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-8);
+}
+
+.spinner-svg {
+  animation: spin-infinite 0.8s linear infinite;
+}
+
+.spinner-sm { width: 20px; height: 20px; }
+.spinner-md { width: 36px; height: 36px; }
+.spinner-lg { width: 52px; height: 52px; }
+
+.spinner-text {
+  font-size: var(--font-size-sm);
+  color: var(--color-slate-600);
+  font-weight: 500;
+}
+
+@keyframes spin-infinite {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
