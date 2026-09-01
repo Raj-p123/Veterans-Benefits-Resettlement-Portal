@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 export const DOCUMENT_TYPES = [
   'Service Certificate',
   'Discharge Certificate',
+  'Discharge Book',
   'Identity Document',
   'Pension Document',
   'Education Certificate',
@@ -12,6 +13,7 @@ export const DOCUMENT_TYPES = [
   'Other',
   'SERVICE_CERTIFICATE',
   'DISCHARGE_CERTIFICATE',
+  'DISCHARGE_BOOK',
   'IDENTITY_DOCUMENT',
   'PENSION_DOCUMENT',
   'EDUCATION_CERTIFICATE',

@@ -97,7 +97,7 @@ export const handleUpload = (req, res, next) => {
       return next(err);
     }
 
-    if (!req.file) {
+    if (!req.file && !req.body?.fileUrl) {
       return next(ApiError.badRequest('Please attach a document file to upload'));
     }
 

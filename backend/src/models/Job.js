@@ -8,7 +8,7 @@ export const EMPLOYMENT_TYPES = [
   'INTERNSHIP',
 ];
 
-export const WORK_MODES = ['ONSITE', 'REMOTE', 'HYBRID'];
+export const WORK_MODES = ['ONSITE', 'ON_SITE', 'REMOTE', 'HYBRID'];
 
 export const JOB_STATUS = [
   'DRAFT',

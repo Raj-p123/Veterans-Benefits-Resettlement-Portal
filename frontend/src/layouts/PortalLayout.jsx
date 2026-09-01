@@ -354,18 +354,14 @@ export const PortalLayout = ({ children }) => {
         </nav>
 
         {/* Drawer Footer with Logout */}
-        <div className="drawer-footer">
-          {isAuthenticated && (
+        {isAuthenticated && (
+          <div className="drawer-footer">
             <button type="button" className="drawer-logout-btn" onClick={handleLogout}>
               <LogOut size={16} />
               <span>Logout</span>
             </button>
-          )}
-          <div className="drawer-helpline">
-            <span className="helpline-title">24/7 HELPLINE</span>
-            <span className="helpline-number">1800-VET-PORTAL</span>
           </div>
-        </div>
+        )}
       </aside>
 
       {/* 3. Backdrop Overlay for Drawer */}

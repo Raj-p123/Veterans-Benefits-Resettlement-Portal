@@ -283,8 +283,9 @@ async function runMasterQA() {
     // 3.2 Fetch Veteran Profile
     const profileGetRes = await makeRequest('GET', '/api/veteran/profile', null, veteranToken);
     assert(profileGetRes.status === 200, 'Veteran profile retrieved successfully (200 OK)');
-    assert(profileGetRes.data?.data?.veteran?.serviceInformation?.serviceBranch === 'ARMY', 'Service branch persisted as "ARMY"');
-    assert(profileGetRes.data?.data?.veteran?.personalInformation?.state === 'Punjab', 'State persisted as "Punjab"');
+    const fetchedProfile = profileGetRes.data?.data?.profile || profileGetRes.data?.data?.veteran;
+    assert(fetchedProfile?.serviceInformation?.serviceBranch === 'ARMY', 'Service branch persisted as "ARMY"');
+    assert(fetchedProfile?.personalInformation?.state === 'Punjab', 'State persisted as "Punjab"');
 
     // =========================================================================
     // SECTION 4: JOBS CATALOG, SEARCH & GEOLOCATION PROXIMITY
@@ -320,7 +321,7 @@ async function runMasterQA() {
       description: 'Supervise military warehouse supply chains, inventory, and logistics operations.',
       industry: 'Defense Logistics',
       employmentType: 'FULL_TIME',
-      workMode: 'ON_SITE',
+      workMode: 'ONSITE',
       location: 'Pune, Maharashtra',
       city: 'Pune',
       state: 'Maharashtra',
@@ -332,6 +333,7 @@ async function runMasterQA() {
       skillsRequired: ['Logistics Management', 'Supply Chain', 'Inventory Control'],
       openings: 3,
     }, employerToken);
+    if (createJobRes.status !== 201) console.log('DEBUG createJobRes error:', JSON.stringify(createJobRes.data));
     assert(createJobRes.status === 201, 'Employer created job successfully (201 Created)');
     const createdJobId = createJobRes.data?.data?.job?._id;
 
@@ -429,13 +431,14 @@ async function runMasterQA() {
     console.log('\n--- SECTION 9: DOCUMENT VERIFICATION & SECURITY ---');
 
     // 9.1 Upload Valid Document
-    const docUploadRes = await makeRequest('POST', '/api/documents', {
+    const docUploadRes = await makeRequest('POST', '/api/veteran/documents', {
       documentType: 'DISCHARGE_BOOK',
       fileUrl: '/uploads/documents/qa_test_sample.pdf',
       fileName: 'Discharge_Book_Rajesh.pdf',
       fileSize: 1024 * 500, // 500 KB
       mimeType: 'application/pdf',
     }, veteranToken);
+    if (docUploadRes.status !== 201) console.log('DEBUG docUploadRes error:', JSON.stringify(docUploadRes.data));
     assert(docUploadRes.status === 201, 'Veteran uploaded document (201 Created)');
     const uploadedDocId = docUploadRes.data?.data?.document?._id;
     assert(docUploadRes.data?.data?.document?.verificationStatus === 'PENDING', 'Document initial status is PENDING');

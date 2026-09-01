@@ -130,7 +130,10 @@ const veteranSchema = new mongoose.Schema(
     serviceInformation: {
       serviceBranch: {
         type: String,
-        enum: ['Army', 'Navy', 'Air Force', 'Coast Guard', 'Other'],
+        enum: [
+          'Army', 'Navy', 'Air Force', 'Coast Guard', 'Other',
+          'ARMY', 'NAVY', 'AIR_FORCE', 'AIR FORCE', 'COAST_GUARD', 'COAST GUARD', 'OTHER'
+        ],
         default: 'Army',
       },
       rank: {
@@ -157,7 +160,10 @@ const veteranSchema = new mongoose.Schema(
       },
       serviceStatus: {
         type: String,
-        enum: ['Retired', 'Discharged', 'Released', 'Other'],
+        enum: [
+          'Retired', 'Discharged', 'Released', 'Other',
+          'RETIRED', 'DISCHARGED', 'RELEASED', 'OTHER'
+        ],
         default: 'Retired',
       },
       lastPosting: {

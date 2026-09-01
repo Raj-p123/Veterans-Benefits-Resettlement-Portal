@@ -1,5 +1,5 @@
 import { io } from 'socket.io-client';
-import { SOCKET_EVENTS } from '../constants/socketEvents';
+import { SOCKET_EVENTS } from '../constants/socketEvents.js';
 
 class SocketService {
   constructor() {

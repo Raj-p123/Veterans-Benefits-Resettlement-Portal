@@ -140,6 +140,12 @@ export const createJob = async (req, res, next) => {
         city: req.body.city || 'Pune',
         state: req.body.state || 'Maharashtra',
         country: req.body.country || 'India',
+        contactPerson: {
+          name: req.user.name || 'HR Manager',
+          designation: 'Talent Acquisition Head',
+          email: req.user.email,
+          phone: req.user.phone || '9876543210',
+        },
         verificationStatus: 'PENDING',
         isActive: true,
       });
@@ -194,6 +200,12 @@ export const createJob = async (req, res, next) => {
     }
 
     const jobId = await generateJobId();
+    const normWorkMode = workMode === 'ON_SITE' ? 'ONSITE' : (workMode || 'ONSITE');
+    const skillsList = Array.isArray(requiredSkills)
+      ? requiredSkills
+      : Array.isArray(req.body.skillsRequired)
+      ? req.body.skillsRequired
+      : [];
 
     const job = await Job.create({
       jobId,
@@ -206,14 +218,14 @@ export const createJob = async (req, res, next) => {
       state,
       country: country || 'India',
       employmentType: employmentType || 'FULL_TIME',
-      workMode: workMode || 'ONSITE',
+      workMode: normWorkMode,
       salaryMin: salaryMin || 0,
       salaryMax: salaryMax || 0,
       salaryCurrency: salaryCurrency || 'INR',
       experienceMin: experienceMin || 0,
       experienceMax: experienceMax || 30,
       education: education || 'Any Graduate / Defense Certified',
-      requiredSkills: Array.isArray(requiredSkills) ? requiredSkills : [],
+      requiredSkills: skillsList,
       preferredSkills: Array.isArray(preferredSkills) ? preferredSkills : [],
       responsibilities: Array.isArray(responsibilities) ? responsibilities : [],
       requirements: Array.isArray(requirements) ? requirements : [],

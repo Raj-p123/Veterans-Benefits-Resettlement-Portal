@@ -75,12 +75,6 @@ export const Login = () => {
     }
   };
 
-  const handleFillDemo = (demoEmail, demoPassword) => {
-    setEmail(demoEmail);
-    setPassword(demoPassword);
-    setError('');
-  };
-
   const hasIntendedDestination = Boolean(getIntendedDestination());
 
   return (
@@ -127,7 +121,7 @@ export const Login = () => {
             name="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="veteran@example.com"
+            placeholder="Enter your email address"
             icon={Mail}
             required
             autoComplete="email"
@@ -158,47 +152,11 @@ export const Login = () => {
           </Button>
         </form>
 
-        {/* Demo Credentials Helper */}
-        <div className="demo-credentials-box">
-          <div className="demo-header">
-            <Sparkles size={14} color="var(--color-primary-600)" />
-            <span>One-Click Demo Credentials:</span>
-          </div>
-          <div className="demo-buttons-grid">
-            <button
-              type="button"
-              className="demo-btn"
-              onClick={() => handleFillDemo('veteran@example.com', 'VeteranPassword123!')}
-            >
-              <strong>Veteran</strong>
-              <small>veteran@example.com</small>
-            </button>
-            <button
-              type="button"
-              className="demo-btn"
-              onClick={() => handleFillDemo('employer@example.com', 'EmployerPassword123!')}
-            >
-              <strong>Employer</strong>
-              <small>employer@example.com</small>
-            </button>
-            <button
-              type="button"
-              className="demo-btn"
-              onClick={() => handleFillDemo('admin@example.com', 'AdminPassword123!')}
-            >
-              <strong>Admin</strong>
-              <small>admin@example.com</small>
-            </button>
-          </div>
-        </div>
-
-        <div className="auth-footer">
-          <p>
-            Don't have an account yet?{' '}
-            <Link to={ROUTES.REGISTER} className="auth-link">
-              Create an Account
-            </Link>
-          </p>
+        <div className="auth-footer-text">
+          Don't have an account yet?{' '}
+          <Link to={ROUTES.REGISTER}>
+            Create an Account
+          </Link>
         </div>
       </div>
     </div>
