@@ -48,10 +48,51 @@ const app = express();
 // Trust reverse proxy (Render, Railway, Heroku, Nginx, AWS ALB) for client IP & rate limiting
 app.set('trust proxy', 1);
 
-// Security Headers (Configured with crossOriginResourcePolicy for uploads & SPA assets)
+// Security Headers with Explicit Content Security Policy (CSP)
 app.use(
   helmet({
     crossOriginResourcePolicy: { policy: 'cross-origin' },
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        baseUri: ["'self'"],
+        fontSrc: ["'self'", 'https:', 'data:'],
+        formAction: ["'self'"],
+        frameAncestors: ["'self'"],
+        imgSrc: [
+          "'self'",
+          'data:',
+          'blob:',
+          'https://*.tile.openstreetmap.org',
+          'https://res.cloudinary.com',
+          'https:',
+        ],
+        objectSrc: ["'none'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrcAttr: ["'none'"],
+        styleSrc: ["'self'", 'https:', "'unsafe-inline'"],
+        connectSrc: [
+          "'self'",
+          'ws:',
+          'wss:',
+          'https://veterans-benefits-resettlement-portal.onrender.com',
+          'wss://veterans-benefits-resettlement-portal.onrender.com',
+          ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
+          ...(process.env.CLIENT_URL ? [process.env.CLIENT_URL] : []),
+          ...(config.nodeEnv === 'development' || process.env.NODE_ENV === 'development'
+            ? [
+                'http://localhost:5000',
+                'ws://localhost:5000',
+                'http://127.0.0.1:5000',
+                'ws://127.0.0.1:5000',
+                'http://localhost:5173',
+                'ws://localhost:5173',
+              ]
+            : []),
+        ],
+        upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null,
+      },
+    },
   })
 );
 

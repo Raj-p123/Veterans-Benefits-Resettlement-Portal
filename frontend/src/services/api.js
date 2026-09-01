@@ -10,7 +10,15 @@ import { authStorage } from '../utils/authStorage.js';
 export const getApiBaseUrl = () => {
   const envUrl = import.meta.env.VITE_API_URL;
   if (envUrl && typeof envUrl === 'string' && envUrl.trim() !== '') {
-    return envUrl.trim();
+    const trimmed = envUrl.trim();
+    if (trimmed.startsWith('/') && typeof window !== 'undefined') {
+      const port = window.location.port;
+      if (port === '5173' || port === '3000') {
+        return `http://localhost:5000${trimmed}`;
+      }
+      return `${window.location.origin}${trimmed}`;
+    }
+    return trimmed;
   }
 
   if (typeof window !== 'undefined') {
@@ -18,7 +26,7 @@ export const getApiBaseUrl = () => {
     if (port === '5173' || port === '3000') {
       return 'http://localhost:5000/api';
     }
-    return '/api';
+    return `${window.location.origin}/api`;
   }
 
   return '/api';
