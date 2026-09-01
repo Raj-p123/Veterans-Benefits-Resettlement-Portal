@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node src/server.js",
+    "build": "cd .. && npm run build",
     "dev": "node ./node_modules/nodemon/bin/nodemon.js src/server.js",
     "seed": "node src/utils/seed.js"
   },

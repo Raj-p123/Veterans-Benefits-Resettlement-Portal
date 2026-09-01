@@ -18,9 +18,28 @@ import { checkDocumentAccess } from './controllers/document.controller.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Resolved Absolute Paths for Static Assets and Production Frontend
-const frontendDistPath = path.resolve(__dirname, '../../frontend/dist');
-const frontendIndexPath = path.join(frontendDistPath, 'index.html');
+// Resolved Candidate Paths for Static Assets and Production Frontend
+export const getFrontendDistInfo = () => {
+  const candidates = [
+    path.resolve(__dirname, '../../frontend/dist'),
+    path.resolve(__dirname, '../frontend/dist'),
+    path.resolve(process.cwd(), 'frontend/dist'),
+    path.resolve(process.cwd(), '../frontend/dist'),
+    path.resolve('frontend/dist'),
+    path.resolve('../frontend/dist'),
+  ];
+
+  for (const candidate of candidates) {
+    const candidateIndex = path.join(candidate, 'index.html');
+    if (fs.existsSync(candidateIndex)) {
+      return { distPath: candidate, indexPath: candidateIndex, exists: true };
+    }
+  }
+
+  const defaultDist = path.resolve(__dirname, '../../frontend/dist');
+  return { distPath: defaultDist, indexPath: path.join(defaultDist, 'index.html'), exists: false };
+};
+
 const uploadsDocumentsPath = path.resolve(__dirname, '../../uploads/documents');
 const uploadsPublicPath = path.resolve(__dirname, '../../uploads/public');
 
@@ -91,9 +110,22 @@ app.use(
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Serve Frontend Production Assets (JS, CSS, images, icons, etc.)
-if (fs.existsSync(frontendDistPath)) {
-  app.use(express.static(frontendDistPath));
+// Serve Frontend Production Assets (JS, CSS, images, icons, etc.) across candidate paths
+const staticCandidates = [
+  path.resolve(__dirname, '../../frontend/dist'),
+  path.resolve(__dirname, '../frontend/dist'),
+  path.resolve(process.cwd(), 'frontend/dist'),
+  path.resolve(process.cwd(), '../frontend/dist'),
+  path.resolve('frontend/dist'),
+  path.resolve('../frontend/dist'),
+];
+
+const mountedStaticPaths = new Set();
+for (const candidate of staticCandidates) {
+  if (fs.existsSync(candidate) && !mountedStaticPaths.has(candidate)) {
+    mountedStaticPaths.add(candidate);
+    app.use(express.static(candidate));
+  }
 }
 
 // Protected File Access for /uploads/documents: Enforce authentication and ownership
@@ -228,18 +260,20 @@ app.use('/api', routes);
 app.use('/api', notFoundHandler);
 
 // Serve React SPA index.html for all client-side navigation routes
-if (fs.existsSync(frontendIndexPath)) {
-  app.get('*', (req, res, next) => {
-    // Never intercept API routes
-    if (req.originalUrl.startsWith('/api') || req.path.startsWith('/api')) {
-      return next();
-    }
-    return res.sendFile(frontendIndexPath);
-  });
-} else {
-  // Graceful fallback when frontend is not built (e.g. backend-only development mode)
-  app.get('/', (req, res) => {
-    res.json({
+app.get('*', (req, res, next) => {
+  // Never intercept API routes
+  if (req.originalUrl.startsWith('/api') || req.path.startsWith('/api')) {
+    return next();
+  }
+
+  const currentDist = getFrontendDistInfo();
+  if (currentDist.exists) {
+    return res.sendFile(currentDist.indexPath);
+  }
+
+  // Fallback if frontend is not built
+  if (req.path === '/' || req.path === '') {
+    return res.json({
       success: true,
       message: 'Welcome to the Veterans Benefits & Resettlement Portal REST API',
       version: '1.0.0',
@@ -254,8 +288,10 @@ if (fs.existsSync(frontendIndexPath)) {
         admin: '/api/admin',
       },
     });
-  });
-}
+  }
+
+  return next();
+});
 
 // 404 Handler for any other unhandled non-GET requests
 app.use(notFoundHandler);
