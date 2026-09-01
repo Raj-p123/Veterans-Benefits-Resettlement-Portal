@@ -66,7 +66,7 @@ export const adminService = {
     window.URL.revokeObjectURL(url);
   },
   getExportUrl: (reportType, queryParams = {}) => {
-    const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+    const baseUrl = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '/api' : 'http://localhost:5000/api');
     const params = new URLSearchParams(queryParams).toString();
     return `${baseUrl}/admin/reports/${reportType}/export${params ? `?${params}` : ''}`;
   },

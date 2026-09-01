@@ -3,9 +3,21 @@ import { config } from './environment.js';
 
 let isConnected = false;
 
+// Helper to sanitize connection strings in logs
+const sanitizeUri = (str) => {
+  if (!str || typeof str !== 'string') return str;
+  return str.replace(/(mongodb(?:\+srv)?:\/\/[^:]+:)([^@]+)(@)/gi, '$1***$3');
+};
+
 export const connectDB = async () => {
   if (isConnected) {
-    console.log('MongoDB is already connected.');
+    console.log('[MongoDB] Already connected.');
+    return;
+  }
+
+  if (!config.mongodbUri || !config.mongodbUri.trim()) {
+    console.error('[MongoDB Error] MONGODB_URI is not set in environment variables.');
+    console.warn('[MongoDB] Running without active database connection. Database-dependent operations will fail until MONGODB_URI is configured.');
     return;
   }
 
@@ -17,7 +29,8 @@ export const connectDB = async () => {
     isConnected = true;
     console.log(`[MongoDB] Connected successfully: ${conn.connection.host}/${conn.connection.name}`);
   } catch (error) {
-    console.error(`[MongoDB Connection Error] ${error.message}`);
+    const safeError = sanitizeUri(error.message);
+    console.error(`[MongoDB Connection Error] ${safeError}`);
     console.warn('[MongoDB] Running without active database connection. Database-dependent operations will fail until MongoDB is available.');
   }
 };
@@ -28,7 +41,8 @@ mongoose.connection.on('disconnected', () => {
 });
 
 mongoose.connection.on('error', (err) => {
-  console.error('[MongoDB Error]', err.message);
+  const safeErr = sanitizeUri(err.message);
+  console.error('[MongoDB Error]', safeErr);
 });
 
 export const getDBStatus = () => {
@@ -45,3 +59,5 @@ export const getDBStatus = () => {
     name: mongoose.connection.name || null,
   };
 };
+
+export default connectDB;

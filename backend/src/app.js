@@ -6,6 +6,7 @@ import rateLimit from 'express-rate-limit';
 import path from 'path';
 import fs from 'fs';
 import jwt from 'jsonwebtoken';
+import { fileURLToPath } from 'url';
 import { config } from './config/environment.js';
 import routes from './routes/index.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
@@ -14,30 +15,71 @@ import { User } from './models/User.js';
 import { Document } from './models/Document.js';
 import { checkDocumentAccess } from './controllers/document.controller.js';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Resolved Absolute Paths for Static Assets and Production Frontend
+const frontendDistPath = path.resolve(__dirname, '../../frontend/dist');
+const frontendIndexPath = path.join(frontendDistPath, 'index.html');
+const uploadsDocumentsPath = path.resolve(__dirname, '../../uploads/documents');
+const uploadsPublicPath = path.resolve(__dirname, '../../uploads/public');
+
 const app = express();
 
-// Security Headers (Configured with crossOriginResourcePolicy for uploads)
+// Trust reverse proxy (Render, Railway, Heroku, Nginx, AWS ALB) for client IP & rate limiting
+app.set('trust proxy', 1);
+
+// Security Headers (Configured with crossOriginResourcePolicy for uploads & SPA assets)
 app.use(
   helmet({
     crossOriginResourcePolicy: { policy: 'cross-origin' },
   })
 );
 
-// CORS Configuration
-const allowedOrigins = [
-  config.clientUrl,
-  'http://localhost:5173',
-  'http://127.0.0.1:5173',
-  'http://localhost:3000',
-];
+// CORS Configuration (Dynamic resolution for single, comma-separated, or same-domain origins)
+const getAllowedOrigins = () => {
+  const envOrigins = (process.env.FRONTEND_URL || process.env.CLIENT_URL || config.clientUrl || '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  return Array.from(new Set([
+    ...envOrigins,
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+    'http://localhost:3000',
+    'http://localhost:5000',
+    'http://127.0.0.1:5000',
+  ])).filter(Boolean);
+};
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
+      // Allow requests with no origin (e.g. mobile apps, curl, server-to-server, same-domain navigations)
+      if (!origin) return callback(null, true);
+
+      const allowedOrigins = getAllowedOrigins();
+      if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
-      return callback(null, true); // Permissive in local dev
+
+      // Check if request origin host matches current request host (same-domain deployment on Render)
+      try {
+        const originUrl = new URL(origin);
+        if (originUrl.host && (origin.includes('onrender.com') || origin.includes('localhost') || origin.includes('127.0.0.1'))) {
+          return callback(null, true);
+        }
+      } catch (e) {
+        // Invalid origin format
+      }
+
+      // Allow localhost/127.0.0.1 origins in development
+      if (config.nodeEnv === 'development' && (origin.includes('localhost') || origin.includes('127.0.0.1'))) {
+        return callback(null, true);
+      }
+
+      return callback(new Error(`CORS blocked: Origin ${origin} not permitted`), false);
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
@@ -48,6 +90,11 @@ app.use(
 // Body Parsers
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Serve Frontend Production Assets (JS, CSS, images, icons, etc.)
+if (fs.existsSync(frontendDistPath)) {
+  app.use(express.static(frontendDistPath));
+}
 
 // Protected File Access for /uploads/documents: Enforce authentication and ownership
 app.use('/uploads/documents/:filename', async (req, res, next) => {
@@ -92,7 +139,14 @@ app.use('/uploads/documents/:filename', async (req, res, next) => {
       });
     }
 
-    const safeFilePath = path.resolve('uploads', 'documents', filename);
+    let safeFilePath = path.resolve(uploadsDocumentsPath, filename);
+    if (!fs.existsSync(safeFilePath)) {
+      safeFilePath = path.resolve(__dirname, '../uploads/documents', filename);
+    }
+    if (!fs.existsSync(safeFilePath)) {
+      safeFilePath = path.resolve('uploads', 'documents', filename);
+    }
+
     if (!fs.existsSync(safeFilePath)) {
       return res.status(404).json({
         success: false,
@@ -111,8 +165,12 @@ app.use('/uploads/documents/:filename', async (req, res, next) => {
   }
 });
 
-// Static File Serving for Public assets only
-app.use('/uploads/public', express.static(path.resolve('uploads', 'public')));
+// Static File Serving for Public uploads
+if (fs.existsSync(uploadsPublicPath)) {
+  app.use('/uploads/public', express.static(uploadsPublicPath));
+} else {
+  app.use('/uploads/public', express.static(path.resolve(__dirname, '../uploads/public')));
+}
 
 // Request Logging
 if (config.nodeEnv !== 'test') {
@@ -163,28 +221,43 @@ app.use('/api/admin/documents/:id/status', verificationLimiter);
 app.use('/api/admin/veterans/:id/verification', verificationLimiter);
 app.use('/api/admin/employers/:id/verification', verificationLimiter);
 
-// Root Welcome Endpoint
-app.get('/', (req, res) => {
-  res.json({
-    success: true,
-    message: 'Welcome to the Veterans Benefits & Resettlement Portal REST API',
-    version: '1.0.0',
-    endpoints: {
-      health: '/api/health',
-      auth: '/api/auth',
-      veteranProfile: '/api/veterans/profile',
-      veteranDocuments: '/api/veterans/documents',
-      schemes: '/api/schemes',
-      jobs: '/api/jobs',
-      admin: '/api/admin',
-    },
-  });
-});
-
-// Master API Routes
+// Master API Routes (Must be registered BEFORE SPA catch-all)
 app.use('/api', routes);
 
-// 404 Handler for undefined routes
+// 404 Handler for undefined /api/* routes (so unmatched API calls return JSON 404, never index.html)
+app.use('/api', notFoundHandler);
+
+// Serve React SPA index.html for all client-side navigation routes
+if (fs.existsSync(frontendIndexPath)) {
+  app.get('*', (req, res, next) => {
+    // Never intercept API routes
+    if (req.originalUrl.startsWith('/api') || req.path.startsWith('/api')) {
+      return next();
+    }
+    return res.sendFile(frontendIndexPath);
+  });
+} else {
+  // Graceful fallback when frontend is not built (e.g. backend-only development mode)
+  app.get('/', (req, res) => {
+    res.json({
+      success: true,
+      message: 'Welcome to the Veterans Benefits & Resettlement Portal REST API',
+      version: '1.0.0',
+      note: 'Frontend production build not detected at frontend/dist. Run "npm run build" to compile React frontend.',
+      endpoints: {
+        health: '/api/health',
+        auth: '/api/auth',
+        veteranProfile: '/api/veterans/profile',
+        veteranDocuments: '/api/veterans/documents',
+        schemes: '/api/schemes',
+        jobs: '/api/jobs',
+        admin: '/api/admin',
+      },
+    });
+  });
+}
+
+// 404 Handler for any other unhandled non-GET requests
 app.use(notFoundHandler);
 
 // Centralized Error Handler

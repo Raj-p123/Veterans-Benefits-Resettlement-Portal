@@ -42,7 +42,7 @@ export const documentService = {
    */
   getDocumentViewUrl: (docId, fileUrl) => {
     const token = authStorage.getToken();
-    const backendBase = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+    const backendBase = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '/api' : 'http://localhost:5000/api');
 
     if (docId) {
       return `${backendBase}/documents/${docId}/file?token=${encodeURIComponent(token || '')}`;
@@ -53,7 +53,7 @@ export const documentService = {
     }
 
     const cleanUrl = fileUrl?.startsWith('/') ? fileUrl : `/${fileUrl || ''}`;
-    const baseUrl = backendBase.replace('/api', '');
+    const baseUrl = backendBase.replace(/\/api\/?$/, '');
     return `${baseUrl}${cleanUrl}?token=${encodeURIComponent(token || '')}`;
   },
 };

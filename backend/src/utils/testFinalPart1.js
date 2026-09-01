@@ -206,6 +206,7 @@ async function runPart1TestSuite() {
       adminUser = await User.create({
         name: 'Command Center Administrator',
         email: `p1_admin_${timestamp}@example.gov.in`,
+        phone: '9876543299',
         password: testPassword,
         role: 'ADMIN',
         isActive: true,

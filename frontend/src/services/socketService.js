@@ -27,7 +27,7 @@ class SocketService {
     }
 
     this.token = token;
-    const socketUrl = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
+    const socketUrl = import.meta.env.VITE_SOCKET_URL || (import.meta.env.PROD ? (typeof window !== 'undefined' ? window.location.origin : '') : 'http://localhost:5000');
 
     this.socket = io(socketUrl, {
       auth: { token },

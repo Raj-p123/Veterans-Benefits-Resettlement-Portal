@@ -15,12 +15,27 @@ class SocketService {
   init(httpServer) {
     this.io = new Server(httpServer, {
       cors: {
-        origin: [
-          config.clientUrl,
-          'http://localhost:5173',
-          'http://127.0.0.1:5173',
-          'http://localhost:3000',
-        ],
+        origin: (origin, callback) => {
+          if (!origin) return callback(null, true);
+          const envOrigins = (process.env.FRONTEND_URL || process.env.CLIENT_URL || config.clientUrl || '')
+            .split(',')
+            .map((s) => s.trim())
+            .filter(Boolean);
+          const allowedOrigins = Array.from(new Set([
+            ...envOrigins,
+            'http://localhost:5173',
+            'http://127.0.0.1:5173',
+            'http://localhost:3000',
+          ])).filter(Boolean);
+
+          if (allowedOrigins.includes(origin)) {
+            return callback(null, true);
+          }
+          if (config.nodeEnv === 'development' && (origin.includes('localhost') || origin.includes('127.0.0.1'))) {
+            return callback(null, true);
+          }
+          return callback(new Error(`Socket.IO CORS blocked: Origin ${origin} not permitted`), false);
+        },
         methods: ['GET', 'POST'],
         credentials: true,
       },
