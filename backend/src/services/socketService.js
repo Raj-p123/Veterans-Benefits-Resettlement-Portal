@@ -31,10 +31,25 @@ class SocketService {
           if (allowedOrigins.includes(origin)) {
             return callback(null, true);
           }
-          if (config.nodeEnv === 'development' && (origin.includes('localhost') || origin.includes('127.0.0.1'))) {
+
+          try {
+            const originUrl = new URL(origin);
+            if (
+              originUrl.hostname.endsWith('onrender.com') ||
+              originUrl.hostname === 'localhost' ||
+              originUrl.hostname === '127.0.0.1'
+            ) {
+              return callback(null, true);
+            }
+          } catch (e) {
+            // Ignore format error
+          }
+
+          if (config.nodeEnv === 'development') {
             return callback(null, true);
           }
-          return callback(new Error(`Socket.IO CORS blocked: Origin ${origin} not permitted`), false);
+
+          return callback(null, false);
         },
         methods: ['GET', 'POST'],
         credentials: true,

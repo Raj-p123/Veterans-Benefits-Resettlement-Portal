@@ -1,4 +1,4 @@
-import apiClient from './api.js';
+import apiClient, { getApiBaseUrl } from './api.js';
 import { authStorage } from '../utils/authStorage.js';
 
 export const documentService = {
@@ -42,7 +42,7 @@ export const documentService = {
    */
   getDocumentViewUrl: (docId, fileUrl) => {
     const token = authStorage.getToken();
-    const backendBase = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '/api' : 'http://localhost:5000/api');
+    const backendBase = getApiBaseUrl();
 
     if (docId) {
       return `${backendBase}/documents/${docId}/file?token=${encodeURIComponent(token || '')}`;

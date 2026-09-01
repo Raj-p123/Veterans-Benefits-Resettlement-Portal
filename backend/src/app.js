@@ -75,7 +75,7 @@ const getAllowedOrigins = () => {
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (e.g. mobile apps, curl, server-to-server, same-domain navigations)
+      // Allow requests with no origin (e.g. mobile apps, curl, server-to-server, same-origin navigations)
       if (!origin) return callback(null, true);
 
       const allowedOrigins = getAllowedOrigins();
@@ -83,22 +83,29 @@ app.use(
         return callback(null, true);
       }
 
-      // Check if request origin host matches current request host (same-domain deployment on Render)
+      // Check if request origin host matches Render deployment or local development
       try {
         const originUrl = new URL(origin);
-        if (originUrl.host && (origin.includes('onrender.com') || origin.includes('localhost') || origin.includes('127.0.0.1'))) {
+        if (
+          originUrl.hostname.endsWith('onrender.com') ||
+          originUrl.hostname === 'localhost' ||
+          originUrl.hostname === '127.0.0.1'
+        ) {
           return callback(null, true);
         }
       } catch (e) {
         // Invalid origin format
       }
 
-      // Allow localhost/127.0.0.1 origins in development
-      if (config.nodeEnv === 'development' && (origin.includes('localhost') || origin.includes('127.0.0.1'))) {
-        return callback(null, true);
+      // In development mode, allow localhost/127.0.0.1 origins
+      if (process.env.NODE_ENV === 'development' || config.nodeEnv === 'development') {
+        if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+          return callback(null, true);
+        }
       }
 
-      return callback(new Error(`CORS blocked: Origin ${origin} not permitted`), false);
+      // Reject unauthorized foreign origins cleanly without setting CORS headers
+      return callback(null, false);
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],

@@ -1,6 +1,29 @@
 import { io } from 'socket.io-client';
 import { SOCKET_EVENTS } from '../constants/socketEvents.js';
 
+/**
+ * Determine the Socket.IO server URL reliably across environments:
+ * 1. If VITE_SOCKET_URL is set, use it.
+ * 2. If running on local Vite dev ports (5173/3000), connect to http://localhost:5000.
+ * 3. In all other cases (e.g. Render production), connect to window.location.origin on the same domain.
+ */
+export const getSocketUrl = () => {
+  const envUrl = import.meta.env.VITE_SOCKET_URL;
+  if (envUrl && typeof envUrl === 'string' && envUrl.trim() !== '') {
+    return envUrl.trim();
+  }
+
+  if (typeof window !== 'undefined') {
+    const port = window.location.port;
+    if (port === '5173' || port === '3000') {
+      return 'http://localhost:5000';
+    }
+    return window.location.origin;
+  }
+
+  return 'http://localhost:5000';
+};
+
 class SocketService {
   constructor() {
     this.socket = null;
@@ -27,7 +50,7 @@ class SocketService {
     }
 
     this.token = token;
-    const socketUrl = import.meta.env.VITE_SOCKET_URL || (import.meta.env.PROD ? (typeof window !== 'undefined' ? window.location.origin : '') : 'http://localhost:5000');
+    const socketUrl = getSocketUrl();
 
     this.socket = io(socketUrl, {
       auth: { token },

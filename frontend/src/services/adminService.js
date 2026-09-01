@@ -1,4 +1,4 @@
-import apiClient from './api.js';
+import apiClient, { getApiBaseUrl } from './api.js';
 
 export const adminService = {
   // Dashboard & Statistics
@@ -66,7 +66,7 @@ export const adminService = {
     window.URL.revokeObjectURL(url);
   },
   getExportUrl: (reportType, queryParams = {}) => {
-    const baseUrl = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '/api' : 'http://localhost:5000/api');
+    const baseUrl = getApiBaseUrl();
     const params = new URLSearchParams(queryParams).toString();
     return `${baseUrl}/admin/reports/${reportType}/export${params ? `?${params}` : ''}`;
   },
