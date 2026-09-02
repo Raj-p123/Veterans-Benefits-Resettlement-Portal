@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayout.jsx';
 import PublicLayout from '../layouts/PublicLayout.jsx';
 import AdminLayout from '../layouts/AdminLayout.jsx';
+import VeteranLayout from '../layouts/VeteranLayout.jsx';
 
 import Home from '../pages/Home/Home.jsx';
 import About from '../pages/About/About.jsx';
@@ -197,130 +198,34 @@ export const AppRoutes = () => {
           }
         />
 
-        {/* Protected Veteran Modules */}
-        <Route
-          path="/veteran"
-          element={
-            <ProtectedRoute>
-              <RoleRoute allowedRoles={[ROLES.VETERAN]}>
-                <Navigate to={ROUTES.VETERAN_DASHBOARD} replace />
-              </RoleRoute>
-            </ProtectedRoute>
-          }
-        />
+      </Route>
 
-        <Route
-          path={ROUTES.VETERAN_DASHBOARD}
-          element={
-            <ProtectedRoute>
-              <RoleRoute allowedRoles={[ROLES.VETERAN]}>
-                <VeteranDashboard />
-              </RoleRoute>
-            </ProtectedRoute>
-          }
-        />
+      {/* 4. Protected Veteran Modules with Dedicated VeteranLayout */}
+      <Route
+        element={
+          <ProtectedRoute>
+            <RoleRoute allowedRoles={[ROLES.VETERAN]}>
+              <VeteranLayout />
+            </RoleRoute>
+          </ProtectedRoute>
+        }
+      >
+        <Route path="/veteran" element={<Navigate to={ROUTES.VETERAN_DASHBOARD} replace />} />
+        <Route path={ROUTES.VETERAN_DASHBOARD} element={<VeteranDashboard />} />
+        <Route path={ROUTES.VETERAN_PROFILE} element={<Profile />} />
+        <Route path={ROUTES.VETERAN_DOCUMENTS} element={<Documents />} />
+        <Route path="/veteran/apply/:schemeId" element={<ApplyScheme />} />
+        <Route path={ROUTES.VETERAN_APPLICATIONS} element={<ApplicationsList />} />
+        <Route path="/veteran/applications/:id" element={<ApplicationDetail />} />
+        <Route path={ROUTES.VETERAN_JOB_APPLICATIONS} element={<MyJobApplications />} />
+        <Route path="/veteran/job-applications/:id" element={<JobApplicationDetail />} />
+        <Route path={ROUTES.VETERAN_SAVED_JOBS} element={<SavedJobs />} />
+        <Route path={ROUTES.VETERAN_NOTIFICATIONS} element={<NotificationCenter />} />
+        <Route path="/veteran/notifications" element={<NotificationCenter />} />
+      </Route>
 
-        <Route
-          path={ROUTES.VETERAN_PROFILE}
-          element={
-            <ProtectedRoute>
-              <RoleRoute allowedRoles={[ROLES.VETERAN]}>
-                <Profile />
-              </RoleRoute>
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path={ROUTES.VETERAN_DOCUMENTS}
-          element={
-            <ProtectedRoute>
-              <RoleRoute allowedRoles={[ROLES.VETERAN]}>
-                <Documents />
-              </RoleRoute>
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Welfare Scheme Applications */}
-        <Route
-          path="/veteran/apply/:schemeId"
-          element={
-            <ProtectedRoute>
-              <RoleRoute allowedRoles={[ROLES.VETERAN]}>
-                <ApplyScheme />
-              </RoleRoute>
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path={ROUTES.VETERAN_APPLICATIONS}
-          element={
-            <ProtectedRoute>
-              <RoleRoute allowedRoles={[ROLES.VETERAN]}>
-                <ApplicationsList />
-              </RoleRoute>
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/veteran/applications/:id"
-          element={
-            <ProtectedRoute>
-              <RoleRoute allowedRoles={[ROLES.VETERAN]}>
-                <ApplicationDetail />
-              </RoleRoute>
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Veteran Job Applications & Bookmarks */}
-        <Route
-          path={ROUTES.VETERAN_JOB_APPLICATIONS}
-          element={
-            <ProtectedRoute>
-              <RoleRoute allowedRoles={[ROLES.VETERAN]}>
-                <MyJobApplications />
-              </RoleRoute>
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/veteran/job-applications/:id"
-          element={
-            <ProtectedRoute>
-              <RoleRoute allowedRoles={[ROLES.VETERAN]}>
-                <JobApplicationDetail />
-              </RoleRoute>
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path={ROUTES.VETERAN_SAVED_JOBS}
-          element={
-            <ProtectedRoute>
-              <RoleRoute allowedRoles={[ROLES.VETERAN]}>
-                <SavedJobs />
-              </RoleRoute>
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Veteran Notification Center */}
-        <Route
-          path={ROUTES.VETERAN_NOTIFICATIONS}
-          element={
-            <ProtectedRoute>
-              <RoleRoute allowedRoles={[ROLES.VETERAN]}>
-                <NotificationCenter />
-              </RoleRoute>
-            </ProtectedRoute>
-          }
-        />
+      {/* 5. Main Portal & Authenticated Routes with Hamburger & Slide-in Drawer */}
+      <Route element={<MainLayout />}>
 
         {/* Protected Employer Management Modules */}
         <Route

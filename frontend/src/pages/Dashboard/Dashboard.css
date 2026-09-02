@@ -1,495 +1,1095 @@
 /* ==========================================================================
-   VETERAN DASHBOARD — CLEAN SAAS STYLES
+   VETERAN DASHBOARD — INDIAN DEFENSE & GOVERNMENT PORTAL AESTHETIC
+   Palette: Deep Navy Blue (#071B3A) + Royal Blue (#146EF5) + Light Slate Canvas
+   Design Philosophy: Trustworthy, Secure, Government-Grade, Accessible, Clean
    ========================================================================== */
 
 .veteran-dashboard-page {
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
+  gap: 1.625rem;
+  width: 100%;
 }
 
-/* --------------------------------------------------------------------------
-   1. WELCOME HEADER
-   -------------------------------------------------------------------------- */
-.dashboard-welcome-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: var(--space-4);
-  flex-wrap: wrap;
-}
-
-.welcome-title-group h1 {
-  font-size: var(--font-size-3xl);
-  font-weight: 700;
-  color: var(--color-text-main);
-  margin-bottom: 4px;
-}
-
-.welcome-title-group p {
-  font-size: var(--font-size-base);
-  color: var(--color-text-secondary);
-}
-
-.welcome-quick-badge {
-  display: flex;
-  align-items: center;
-}
-
-/* --------------------------------------------------------------------------
-   2. STATISTICS CARDS (4-Column Grid)
-   -------------------------------------------------------------------------- */
-.dashboard-stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-4);
-}
-
-.stat-card {
-  background-color: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-5);
-  box-shadow: var(--shadow-card);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  transition: all var(--transition-fast);
-}
-
-.stat-card:hover {
-  border-color: var(--color-border-strong);
-  box-shadow: var(--shadow-card-hover);
-  transform: translateY(-1px);
-}
-
-.stat-card-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--space-2);
-}
-
-.stat-label {
-  font-size: var(--font-size-sm);
-  font-weight: 500;
-  color: var(--color-text-secondary);
-}
-
-.stat-icon-wrapper {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-md);
+.veteran-loading-container {
+  padding: 5rem 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.icon-blue {
-  background-color: #EFF6FF;
-  color: #146EF5;
+/* --------------------------------------------------------------------------
+   1. HERO / WELCOME AREA
+   -------------------------------------------------------------------------- */
+.veteran-hero-banner {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-left: 4px solid #071B3A;
+  border-radius: 8px;
+  padding: 1.5rem 1.75rem;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
 }
 
-.icon-green {
-  background-color: #ECFDF5;
-  color: #10B981;
+.hero-text-block {
+  flex: 1;
+  min-width: 280px;
 }
 
-.icon-purple {
-  background-color: #F5F3FF;
-  color: #8B5CF6;
-}
-
-.icon-amber {
-  background-color: #FEF3C7;
-  color: #D97706;
-}
-
-.stat-value {
-  font-size: 1.75rem;
+.hero-greeting {
+  font-size: 1.5rem;
   font-weight: 700;
-  color: var(--color-text-main);
-  line-height: 1.2;
-  margin-bottom: var(--space-3);
+  color: #071B3A;
+  margin: 0 0 0.35rem 0;
+  letter-spacing: -0.02em;
 }
 
-.stat-action-link {
-  font-size: var(--font-size-xs);
-  font-weight: 600;
-  color: var(--color-accent-blue);
-  text-decoration: none;
+.hero-tagline {
+  font-size: 0.875rem;
+  color: #475569;
+  margin: 0;
+  line-height: 1.5;
+  max-width: 620px;
+}
+
+/* Status Card on the Right */
+.hero-status-card {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 0.875rem 1.125rem;
+  min-width: 240px;
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.status-card-header {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #64748B;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.status-pill {
   display: inline-flex;
   align-items: center;
-  transition: color var(--transition-fast);
-}
-
-.stat-action-link:hover {
-  color: var(--color-accent-blue-hover);
-}
-
-/* --------------------------------------------------------------------------
-   3. SECTIONS COMMON
-   -------------------------------------------------------------------------- */
-.dashboard-section {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-
-.section-header-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-
-.section-header-row h2 {
-  font-size: var(--font-size-lg);
-  font-weight: 700;
-  color: var(--color-text-main);
-}
-
-.section-subtext {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-secondary);
-}
-
-.section-view-all {
-  font-size: var(--font-size-xs);
+  gap: 0.375rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
   font-weight: 600;
-  color: var(--color-accent-blue);
-  text-decoration: none;
+  width: fit-content;
 }
 
-.section-view-all:hover {
-  text-decoration: underline;
+.status-pill.verified {
+  background-color: #ECFDF5;
+  color: #047857;
+  border: 1px solid #A7F3D0;
+}
+
+.status-pill.pending {
+  background-color: #FEF3C7;
+  color: #B45309;
+  border: 1px solid #FDE68A;
+}
+
+.status-pill.rejected {
+  background-color: #FEF2F2;
+  color: #B91C1C;
+  border: 1px solid #FECACA;
+}
+
+.status-card-subtext {
+  font-size: 0.6875rem;
+  color: #64748B;
 }
 
 /* --------------------------------------------------------------------------
-   4. RECOMMENDED SECTION
+   2. QUICK STATISTICS (4 CARDS)
    -------------------------------------------------------------------------- */
-.recommendations-grid {
+.stats-cards-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-4);
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.125rem;
 }
 
-.recommendation-card {
-  background-color: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-5);
-  box-shadow: var(--shadow-card);
+.veteran-stat-card {
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 1.125rem 1.25rem;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: all var(--transition-fast);
+  transition: all 0.18s ease;
+  position: relative;
 }
 
-.recommendation-card:hover {
-  border-color: var(--color-border-strong);
-  box-shadow: var(--shadow-card-hover);
+.veteran-stat-card:hover {
+  border-color: #CBD5E1;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+  transform: translateY(-1px);
 }
 
-.rec-top-row {
+.stat-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--space-2);
+  margin-bottom: 0.625rem;
 }
 
-.rec-type-label {
-  font-size: var(--font-size-xs);
+.stat-category-label {
+  font-size: 0.75rem;
   font-weight: 600;
-  color: var(--color-text-secondary);
+  color: #64748B;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 
-.match-pill {
+.stat-icon-box {
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.stat-icon-blue {
+  background-color: #EFF6FF;
+  color: #146EF5;
+}
+
+.stat-icon-green {
+  background-color: #ECFDF5;
+  color: #059669;
+}
+
+.stat-icon-purple {
+  background-color: #F5F3FF;
+  color: #7C3AED;
+}
+
+.stat-icon-amber {
+  background-color: #FEF3C7;
+  color: #D97706;
+}
+
+.stat-number {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #071B3A;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.2rem;
+}
+
+.stat-short-desc {
+  font-size: 0.75rem;
+  color: #64748B;
+  margin: 0 0 0.75rem 0;
+  line-height: 1.35;
+}
+
+.stat-footer {
+  padding-top: 0.625rem;
+  border-top: 1px solid #F1F5F9;
+}
+
+.stat-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #146EF5;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.stat-link:hover {
+  color: #0D5DD6;
+  transform: translateX(2px);
+}
+
+.stat-link:focus-visible {
+  outline: 2px solid #146EF5;
+  outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   3. COMMON DASHBOARD BLOCK LAYOUT
+   -------------------------------------------------------------------------- */
+.dashboard-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.block-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.block-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #071B3A;
+  margin: 0 0 0.15rem 0;
+  letter-spacing: 0.02em;
+}
+
+.block-subtitle {
+  font-size: 0.75rem;
+  color: #64748B;
+  margin: 0;
+}
+
+.block-header-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #146EF5;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.block-header-link:hover {
+  color: #0D5DD6;
+  text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   4. PERSONALIZED RECOMMENDATIONS (2 LARGE CARDS)
+   -------------------------------------------------------------------------- */
+.recommendations-duo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.125rem;
+}
+
+.gov-recommendation-card {
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 1.375rem 1.5rem;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.18s ease;
+  position: relative;
+}
+
+.gov-recommendation-card:hover {
+  border-color: #CBD5E1;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+}
+
+.rec-top-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.rec-tag {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+.rec-tag-scheme {
+  color: #146EF5;
+  background-color: #EFF6FF;
+  border: 1px solid #DBEAFE;
+}
+
+.rec-tag-job {
+  color: #7C3AED;
+  background-color: #F5F3FF;
+  border: 1px solid #EDE9FE;
+}
+
+.rec-match-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
   background-color: #ECFDF5;
   color: #047857;
   border: 1px solid #A7F3D0;
-  font-size: var(--font-size-xs);
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: var(--radius-full);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: 9999px;
 }
 
-.rec-title {
-  font-size: var(--font-size-md);
-  font-weight: 600;
-  color: var(--color-text-main);
-  margin-bottom: var(--space-1);
+.rec-match-pill.job-pill {
+  background-color: #ECFDF5;
+  color: #047857;
 }
 
-.rec-desc {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-  line-height: 1.45;
-  margin-bottom: var(--space-4);
+.rec-content-area {
+  margin-bottom: 1rem;
+}
+
+.rec-opportunity-title {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #071B3A;
+  margin: 0 0 0.4rem 0;
+  line-height: 1.35;
+}
+
+.rec-opportunity-desc {
+  font-size: 0.8125rem;
+  color: #475569;
+  line-height: 1.5;
+  margin: 0;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-.rec-card-bottom {
+.rec-job-meta-row {
   display: flex;
   align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  font-size: 0.75rem;
+  color: #64748B;
+  margin-top: 0.5rem;
+}
+
+.rec-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.rec-employment-pill {
+  background: #F1F5F9;
+  color: #475569;
+  padding: 0.1rem 0.45rem;
+  border-radius: 4px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+}
+
+.rec-bottom-action {
+  display: flex;
+  align-items: center;
+  padding-top: 0.875rem;
+  border-top: 1px solid #F1F5F9;
 }
 
 /* --------------------------------------------------------------------------
-   5. APPLICATION STATUS CARD
+   5. APPLICATION TRACKING (PREMIUM TRACKER COMPONENT)
    -------------------------------------------------------------------------- */
-.app-status-card {
-  background-color: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-5);
-  box-shadow: var(--shadow-card);
+.gov-application-card {
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 1.375rem 1.5rem;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: 1.25rem;
 }
 
-.app-status-info-row {
+.app-card-top-info {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   flex-wrap: wrap;
-  gap: var(--space-2);
+  gap: 0.75rem;
 }
 
-.app-id-tag {
-  font-size: var(--font-size-xs);
-  font-weight: 600;
-  color: var(--color-accent-blue);
-  display: block;
-  margin-bottom: 2px;
+.app-main-meta {
+  flex: 1;
+  min-width: 260px;
+}
+
+.app-number-tag {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #146EF5;
+  background-color: #EFF6FF;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  display: inline-block;
+  margin-bottom: 0.35rem;
+  letter-spacing: 0.02em;
 }
 
 .app-scheme-name {
-  font-size: var(--font-size-md);
-  font-weight: 600;
-  color: var(--color-text-main);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #071B3A;
+  margin: 0;
 }
 
-.app-status-badge-group {
+.app-status-badge-container {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 4px;
+  gap: 0.25rem;
 }
 
-.app-submission-date {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-muted);
+.app-date-text {
+  font-size: 0.6875rem;
+  color: #94A3B8;
 }
 
-.app-timeline-wrapper {
-  padding-top: var(--space-2);
-  border-top: 1px solid var(--color-border-subtle);
+/* Horizontal Tracker on Desktop */
+.gov-tracker-wrapper {
+  padding-top: 1rem;
+  border-top: 1px solid #F1F5F9;
+}
+
+.gov-tracker-steps {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  position: relative;
+  width: 100%;
+}
+
+.gov-tracker-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  position: relative;
+}
+
+.tracker-node-col {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  position: relative;
+}
+
+.tracker-node {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  margin: 0 auto;
+  transition: all 0.2s ease;
+}
+
+/* States */
+.tracker-completed .tracker-node {
+  background-color: #ECFDF5;
+  border: 1.5px solid #059669;
+  color: #059669;
+}
+
+.tracker-current .tracker-node {
+  background-color: #EFF6FF;
+  border: 2px solid #146EF5;
+  color: #146EF5;
+  box-shadow: 0 0 0 3px rgba(20, 110, 245, 0.15);
+}
+
+.tracker-pulse-inner {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #146EF5;
+}
+
+.tracker-pending .tracker-node {
+  background-color: #FFFFFF;
+  border: 1.5px solid #CBD5E1;
+  color: #94A3B8;
+}
+
+.tracker-pending-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #CBD5E1;
+}
+
+.tracker-failed .tracker-node {
+  background-color: #FEF2F2;
+  border: 1.5px solid #DC2626;
+  color: #DC2626;
+}
+
+/* Connectors */
+.tracker-connector {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background-color: #E2E8F0;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.tracker-connector.connector-filled {
+  background-color: #059669;
+}
+
+/* Labels */
+.tracker-label-col {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 0.25rem;
+}
+
+.tracker-stage-number {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #94A3B8;
+  letter-spacing: 0.04em;
+}
+
+.tracker-stage-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #475569;
+  margin-top: 2px;
+}
+
+.tracker-current .tracker-stage-label {
+  color: #146EF5;
+  font-weight: 700;
+}
+
+.tracker-completed .tracker-stage-label {
+  color: #0F172A;
+}
+
+/* Empty Tracker State */
+.empty-tracker-card {
+  background-color: #FFFFFF;
+  border: 1px dashed #CBD5E1;
+  border-radius: 8px;
+  padding: 2.25rem 1.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.empty-icon-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #EFF6FF;
+  color: #146EF5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-title {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #071B3A;
+  margin: 0;
+}
+
+.empty-desc {
+  font-size: 0.8125rem;
+  color: #64748B;
+  margin: 0;
+  max-width: 400px;
 }
 
 /* --------------------------------------------------------------------------
-   6. LATEST OPPORTUNITIES (Compact Job Rows)
+   6. QUICK ACTIONS
    -------------------------------------------------------------------------- */
-.latest-jobs-list {
+.quick-actions-quad-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.875rem;
+}
+
+.gov-quick-action-card {
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 0.875rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.02);
+  transition: all 0.15s ease;
+}
+
+.gov-quick-action-card:hover {
+  border-color: #146EF5;
+  box-shadow: 0 4px 10px rgba(20, 110, 245, 0.07);
+  transform: translateY(-1px);
+}
+
+.gov-quick-action-card:focus-visible {
+  outline: 2px solid #146EF5;
+  outline-offset: 2px;
+}
+
+.action-icon-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.action-navy {
+  background-color: #EFF6FF;
+  color: #146EF5;
+}
+
+.action-blue {
+  background-color: #F0F9FF;
+  color: #0284C7;
+}
+
+.action-green {
+  background-color: #ECFDF5;
+  color: #059669;
+}
+
+.action-purple {
+  background-color: #F5F3FF;
+  color: #7C3AED;
+}
+
+.action-text-box {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
-}
-
-.job-row-card {
-  background-color: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-4) var(--space-5);
-  box-shadow: var(--shadow-card);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
-  transition: all var(--transition-fast);
-}
-
-.job-row-card:hover {
-  border-color: var(--color-border-strong);
-  box-shadow: var(--shadow-card-hover);
-}
-
-.job-row-left {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
+  gap: 2px;
   flex: 1;
   min-width: 0;
 }
 
-.job-row-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-md);
-  background-color: var(--color-bg-canvas);
-  border: 1px solid var(--color-border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-navy-dark);
-  flex-shrink: 0;
-}
-
-.job-row-details {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-
-.job-row-title {
-  font-size: var(--font-size-md);
-  font-weight: 600;
-  color: var(--color-text-main);
+.action-name {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #071B3A;
+  margin: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.job-row-meta {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-size: var(--font-size-xs);
-  color: var(--color-text-secondary);
-  flex-wrap: wrap;
+.action-explanation {
+  font-size: 0.6875rem;
+  color: #64748B;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.meta-dot {
-  color: var(--color-text-muted);
-}
-
-.job-location {
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-}
-
-.job-row-right {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
+.action-chevron {
+  color: #94A3B8;
   flex-shrink: 0;
+  transition: transform 0.15s ease;
 }
 
-.job-row-compensation {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 2px;
-}
-
-.job-salary {
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  color: var(--color-text-main);
-}
-
-.job-match-badge {
-  font-size: var(--font-size-xs);
-  font-weight: 600;
-  color: #047857;
-  background-color: #ECFDF5;
-  padding: 1px 6px;
-  border-radius: var(--radius-full);
+.gov-quick-action-card:hover .action-chevron {
+  color: #146EF5;
+  transform: translateX(2px);
 }
 
 /* --------------------------------------------------------------------------
-   7. QUICK ACTIONS BAR
+   7. PROFILE COMPLETION SECTION
    -------------------------------------------------------------------------- */
-.quick-actions-bar {
+.profile-completion-card {
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.completion-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.completion-title {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #071B3A;
+  margin: 0 0 0.2rem 0;
+}
+
+.completion-subtext {
+  font-size: 0.75rem;
+  color: #64748B;
+  margin: 0;
+}
+
+.completion-score-badge {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+}
+
+.score-number {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #146EF5;
+}
+
+.score-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748B;
+}
+
+.completion-progress-track {
+  width: 100%;
+  height: 6px;
+  background-color: #E2E8F0;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.completion-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #146EF5 0%, #059669 100%);
+  border-radius: 9999px;
+  transition: width 0.4s ease;
+}
+
+.completion-checklist-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-3);
+  gap: 0.75rem;
+  padding-top: 0.35rem;
 }
 
-.quick-action-item {
-  background-color: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-3) var(--space-4);
+.checklist-item {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
-  text-decoration: none;
-  color: var(--color-text-main);
-  font-size: var(--font-size-sm);
-  font-weight: 500;
-  box-shadow: var(--shadow-card);
-  transition: all var(--transition-fast);
+  gap: 0.5rem;
 }
 
-.quick-action-item:hover {
-  border-color: var(--color-accent-blue);
-  color: var(--color-accent-blue);
-  box-shadow: var(--shadow-card-hover);
-  transform: translateY(-1px);
-}
-
-.quick-action-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-md);
-  background-color: var(--color-bg-canvas);
-  color: var(--color-accent-blue);
+.checklist-icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
 
+.checklist-done {
+  background-color: #ECFDF5;
+  color: #059669;
+  border: 1px solid #A7F3D0;
+}
+
+.checklist-pending {
+  background-color: #F1F5F9;
+  color: #94A3B8;
+  border: 1px solid #CBD5E1;
+}
+
+.checklist-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #64748B;
+}
+
+.checklist-label.label-done {
+  color: #0F172A;
+  font-weight: 600;
+}
+
+.completion-action-row {
+  display: flex;
+  align-items: center;
+  padding-top: 0.5rem;
+  border-top: 1px solid #F1F5F9;
+}
+
+.completion-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #146EF5;
+  text-decoration: none;
+}
+
+.completion-link:hover {
+  text-decoration: underline;
+}
+
 /* --------------------------------------------------------------------------
-   RESPONSIVE BREAKPOINTS
+   8. LATEST OPPORTUNITIES (COMPACT JOB ROWS)
+   -------------------------------------------------------------------------- */
+.latest-jobs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.gov-job-row {
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 0.875rem 1.25rem;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.02);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.125rem;
+  transition: all 0.15s ease;
+}
+
+.gov-job-row:hover {
+  border-color: #CBD5E1;
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.05);
+}
+
+.job-row-main {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.job-avatar-box {
+  width: 38px;
+  height: 38px;
+  border-radius: 6px;
+  background-color: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #146EF5;
+  flex-shrink: 0;
+}
+
+.job-info-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.job-title-text {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #071B3A;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.job-details-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.75rem;
+  color: #64748B;
+  flex-wrap: wrap;
+}
+
+.meta-company,
+.meta-loc {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.meta-divider {
+  color: #CBD5E1;
+}
+
+.meta-employment {
+  background-color: #F1F5F9;
+  color: #475569;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.6875rem;
+  font-weight: 500;
+}
+
+.job-row-action-side {
+  display: flex;
+  align-items: center;
+  gap: 1.125rem;
+  flex-shrink: 0;
+}
+
+.job-salary-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.2rem;
+}
+
+.salary-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #071B3A;
+}
+
+.match-tag {
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: #047857;
+  background-color: #ECFDF5;
+  border: 1px solid #A7F3D0;
+  padding: 0.1rem 0.4rem;
+  border-radius: 9999px;
+}
+
+/* --------------------------------------------------------------------------
+   9. RESPONSIVE BREAKPOINTS (NO HORIZONTAL OVERFLOW AT ANY WIDTH)
    -------------------------------------------------------------------------- */
 @media (max-width: 1024px) {
-  .dashboard-stats-grid {
+  .stats-cards-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .quick-actions-bar {
+  .quick-actions-quad-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .completion-checklist-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 768px) {
-  .recommendations-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .job-row-card {
+  .veteran-hero-banner {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .job-row-right {
+  .hero-status-card {
     width: 100%;
-    justify-content: space-between;
-    padding-top: var(--space-2);
-    border-top: 1px solid var(--color-border-subtle);
+    max-width: none;
   }
 
-  .job-row-compensation {
+  .recommendations-duo-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .gov-job-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .job-row-action-side {
+    width: 100%;
+    justify-content: space-between;
+    padding-top: 0.625rem;
+    border-top: 1px solid #F1F5F9;
+  }
+
+  .job-salary-stack {
     align-items: flex-start;
   }
 }
 
-@media (max-width: 480px) {
-  .dashboard-stats-grid {
+/* Vertical Timeline on Mobile */
+@media (max-width: 640px) {
+  .gov-tracker-steps {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+  }
+
+  .gov-tracker-step {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0.875rem;
+    width: 100%;
+  }
+
+  .tracker-node-col {
+    width: 24px;
+    height: auto;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .tracker-connector {
+    top: 24px;
+    left: 11px;
+    width: 2px;
+    height: calc(100% + 1.25rem);
+    transform: none;
+  }
+
+  .tracker-label-col {
+    margin-top: 0;
+    align-items: flex-start;
+    text-align: left;
+    padding: 0;
+  }
+
+  .completion-checklist-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .stats-cards-grid {
     grid-template-columns: 1fr;
   }
 
-  .quick-actions-bar {
+  .quick-actions-quad-grid {
     grid-template-columns: 1fr;
+  }
+
+  .hero-greeting {
+    font-size: 1.3125rem;
   }
 }
