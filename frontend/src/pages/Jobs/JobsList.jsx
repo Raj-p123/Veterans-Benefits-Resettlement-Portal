@@ -6,27 +6,21 @@ import JobMap from '../../components/Map/JobMap.jsx';
 import {
   Briefcase,
   MapPin,
-  Building2,
-  DollarSign,
   Search,
   Filter,
-  Bookmark,
-  Sparkles,
-  Clock,
-  CheckCircle2,
-  ChevronRight,
-  RotateCcw,
   Navigation,
   Map as MapIcon,
   List as ListIcon,
   AlertCircle,
   X,
-  Layers,
+  RotateCcw,
+  ShieldCheck,
+  Award,
 } from 'lucide-react';
 import Button from '../../components/Button/Button.jsx';
-import Badge from '../../components/Badge/Badge.jsx';
-import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner.jsx';
-import ErrorMessage from '../../components/ErrorMessage/ErrorMessage.jsx';
+import JobCard from './components/JobCard.jsx';
+import JobFilters from './components/JobFilters.jsx';
+import JobSkeleton from './components/JobSkeleton.jsx';
 import './JobsList.css';
 
 const INDUSTRIES = [
@@ -65,7 +59,7 @@ const DISTANCE_OPTIONS = [
 
 export const JobsList = () => {
   const { user } = useAuth();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   // View Mode: 'list' or 'map'
   const [viewMode, setViewMode] = useState('list');
@@ -92,6 +86,9 @@ export const JobsList = () => {
   const [employmentType, setEmploymentType] = useState(searchParams.get('employmentType') || 'All');
   const [city, setCity] = useState(searchParams.get('city') || 'All');
   const [sortBy, setSortBy] = useState('newest');
+
+  // Mobile Filter Drawer Toggle State
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
   const fetchJobs = useCallback(async () => {
     try {
@@ -125,7 +122,8 @@ export const JobsList = () => {
 
       if (payload.jobs || payload.results) {
         const fetchedJobs = payload.jobs || payload.results || [];
-        const fetchedMapJobs = payload.mapJobs || fetchedJobs.filter((j) => j.latitude && j.longitude);
+        const fetchedMapJobs =
+          payload.mapJobs || fetchedJobs.filter((j) => j.latitude && j.longitude);
         setJobs(fetchedJobs);
         setMapJobs(fetchedMapJobs);
         setPagination(
@@ -178,6 +176,7 @@ export const JobsList = () => {
     setSelectedRadius('All');
     setGeoNotice(null);
     setPagination((prev) => ({ ...prev, page: 1 }));
+    setMobileFilterOpen(false);
   };
 
   // Browser Geolocation for "Jobs Near Me"
@@ -225,7 +224,9 @@ export const JobsList = () => {
 
       setJobs((prevJobs) =>
         prevJobs.map((j) =>
-          j._id === jobId || j.jobId === jobId ? { ...j, isSaved: !currentSaved } : j
+          j._id === jobId || j.id === jobId || j.jobId === jobId
+            ? { ...j, isSaved: !currentSaved }
+            : j
         )
       );
     } catch (err) {
@@ -233,114 +234,151 @@ export const JobsList = () => {
     }
   };
 
-  const formatSalary = (min, max) => {
-    if (!min && !max) return 'Best in Industry';
-    const toLakhs = (val) => `${(val / 100000).toFixed(1)} LPA`;
-    if (min && max) return `₹${toLakhs(min)} - ₹${toLakhs(max)}`;
-    if (min) return `₹${toLakhs(min)}+`;
-    return `Up to ₹${toLakhs(max)}`;
-  };
+  // Count active filters for badge
+  const activeFilterCount = [
+    industry !== 'All',
+    workMode !== 'All',
+    employmentType !== 'All',
+    city !== 'All',
+    userLocation !== null,
+  ].filter(Boolean).length;
 
   return (
     <div className="jobs-page-root">
-      <div className="container">
-        {/* Hero Section */}
-        <div className="jobs-hero-card">
-          <div className="jobs-hero-content">
-            <h1 className="jobs-hero-title">Defense Veteran Career & Resettlement Portal</h1>
-            <p className="jobs-hero-subtitle">
-              Verified corporate opportunities tailored for Indian Armed Forces veterans across
-              aerospace, defense manufacturing, physical security, logistics, and technology.
-            </p>
-
-            <form onSubmit={handleSearchSubmit} className="jobs-search-bar-unified">
-              <div className="search-bar-field keyword-field">
-                <Search size={18} className="search-field-icon" />
-                <input
-                  type="text"
-                  placeholder="Job title, skill (e.g. Radar, Drone), or role..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="unified-search-input"
-                />
-              </div>
-
-              <div className="search-bar-divider" />
-
-              <div className="search-bar-field location-field">
-                <MapPin size={18} className="search-field-icon" />
-                <input
-                  type="text"
-                  placeholder="City or state (e.g. Bhubaneswar, Odisha)..."
-                  value={locationSearch}
-                  onChange={(e) => setLocationSearch(e.target.value)}
-                  className="unified-search-input"
-                />
-              </div>
-
-              <div className="search-bar-actions">
-                <Button type="submit" variant="primary" size="md">
-                  Search Jobs
-                </Button>
-                <button
-                  type="button"
-                  onClick={handleGetNearbyJobs}
-                  className={`btn-jobs-near-me ${userLocation ? 'active' : ''}`}
-                  disabled={geoLoading}
-                  title="Discover jobs near your current GPS location"
-                >
-                  <Navigation size={15} className={geoLoading ? 'spin-icon' : ''} />
-                  <span>{geoLoading ? 'Locating...' : 'Jobs Near Me'}</span>
-                </button>
-              </div>
-            </form>
-
-            {/* Geolocation Notice Banner */}
-            {geoNotice && (
-              <div className="geo-notice-banner">
-                <AlertCircle size={15} color="#D97706" />
-                <span>{geoNotice}</span>
-                <button type="button" onClick={() => setGeoNotice(null)} className="notice-close-btn">
-                  <X size={13} />
-                </button>
-              </div>
-            )}
-
-            {userLocation && (
-              <div className="geo-active-banner">
-                <Navigation size={14} color="#10B981" />
-                <span>
-                  Showing nearby jobs sorted by distance from your location.
-                </span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setUserLocation(null);
-                    setSortBy('newest');
-                  }}
-                  className="geo-clear-btn"
-                >
-                  Clear GPS Filter
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* View Mode & Sorting Control Bar */}
-        <div className="jobs-toolbar-controls">
-          <div className="toolbar-left-stats">
-            <span>
-              Showing <strong>{jobs.length}</strong> of <strong>{pagination.total}</strong> opportunities
+      <div className="jobs-container">
+        {/* ==================================================================
+            1. PAGE HEADER / HERO SECTION (DEFENSE THEME)
+            ================================================================== */}
+        <section className="jobs-hero-banner" aria-label="Jobs Hero">
+          <div className="hero-badge-row">
+            <span className="gov-seal-badge">
+              <ShieldCheck size={14} className="gov-seal-icon" aria-hidden="true" />
+              <span>DEFENSE RESETTLEMENT & EMPLOYMENT COMMAND</span>
             </span>
           </div>
 
+          <h1 className="jobs-hero-title">Veteran Career & Resettlement</h1>
+          <p className="jobs-hero-subtitle">
+            Verified career opportunities for Indian Armed Forces veterans.
+          </p>
+          <p className="jobs-hero-support-text">
+            Discover defense, aerospace, security, technology, logistics and other career opportunities matched to your experience and skills.
+          </p>
+
+          {/* Integrated Modern Job Search Bar */}
+          <form onSubmit={handleSearchSubmit} className="jobs-search-bar-unified" role="search">
+            <div className="search-bar-field keyword-field">
+              <Search size={18} className="search-field-icon" aria-hidden="true" />
+              <input
+                type="text"
+                placeholder="Job title, skill, role..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="unified-search-input"
+                aria-label="Job title, skill, or role"
+              />
+            </div>
+
+            <div className="search-bar-divider" aria-hidden="true" />
+
+            <div className="search-bar-field location-field">
+              <MapPin size={18} className="search-field-icon" aria-hidden="true" />
+              <input
+                type="text"
+                placeholder="City, state or location..."
+                value={locationSearch}
+                onChange={(e) => setLocationSearch(e.target.value)}
+                className="unified-search-input"
+                aria-label="City, state or location"
+              />
+            </div>
+
+            <div className="search-bar-actions">
+              <Button type="submit" variant="primary" size="md">
+                Search Jobs
+              </Button>
+              <button
+                type="button"
+                onClick={handleGetNearbyJobs}
+                className={`btn-jobs-near-me ${userLocation ? 'active' : ''}`}
+                disabled={geoLoading}
+                title="Discover opportunities near your current GPS location"
+              >
+                <Navigation size={14} className={geoLoading ? 'spin-icon' : ''} aria-hidden="true" />
+                <span>{geoLoading ? 'Locating...' : 'Jobs Near Me'}</span>
+              </button>
+            </div>
+          </form>
+
+          {/* Geolocation Notices */}
+          {geoNotice && (
+            <div className="geo-notice-banner" role="alert">
+              <AlertCircle size={15} color="#D97706" aria-hidden="true" />
+              <span>{geoNotice}</span>
+              <button
+                type="button"
+                onClick={() => setGeoNotice(null)}
+                className="notice-close-btn"
+                aria-label="Dismiss notice"
+              >
+                <X size={13} />
+              </button>
+            </div>
+          )}
+
+          {userLocation && (
+            <div className="geo-active-banner">
+              <div className="geo-active-info">
+                <Navigation size={14} color="#059669" aria-hidden="true" />
+                <span>Showing nearby jobs sorted by distance from your coordinates.</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setUserLocation(null);
+                  setSortBy('newest');
+                }}
+                className="geo-clear-btn"
+              >
+                Clear GPS Filter
+              </button>
+            </div>
+          )}
+        </section>
+
+        {/* ==================================================================
+            2. RESULTS TOOLBAR (STATUS, RADIUS, SORT, LIST/MAP SWITCHER)
+            ================================================================== */}
+        <div className="jobs-toolbar-row">
+          <div className="toolbar-left-stats">
+            <span className="results-count-text">
+              Showing <strong>{jobs.length}</strong> of <strong>{pagination.total}</strong> opportunities
+            </span>
+
+            {/* Mobile Filter Trigger Button */}
+            <button
+              type="button"
+              className="btn-mobile-filter-trigger"
+              onClick={() => setMobileFilterOpen(true)}
+              aria-label="Open filter drawer"
+            >
+              <Filter size={14} aria-hidden="true" />
+              <span>Filters</span>
+              {activeFilterCount > 0 && (
+                <span className="filter-count-badge">{activeFilterCount}</span>
+              )}
+            </button>
+          </div>
+
           <div className="toolbar-right-actions">
-            {/* Distance Filter if GPS is active */}
+            {/* Radius Filter if GPS is active */}
             {userLocation && (
-              <div className="distance-filter-box">
-                <span className="distance-label">Radius:</span>
+              <div className="toolbar-control-box">
+                <label htmlFor="radius-select" className="toolbar-label">
+                  Radius:
+                </label>
                 <select
+                  id="radius-select"
                   value={selectedRadius}
                   onChange={(e) => {
                     setSelectedRadius(e.target.value);
@@ -357,9 +395,13 @@ export const JobsList = () => {
               </div>
             )}
 
-            {/* Sorting */}
-            <div className="sort-dropdown-box">
+            {/* Sort Control */}
+            <div className="toolbar-control-box">
+              <label htmlFor="sort-select" className="toolbar-label">
+                Sort:
+              </label>
               <select
+                id="sort-select"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
                 className="toolbar-select"
@@ -371,249 +413,205 @@ export const JobsList = () => {
               </select>
             </div>
 
-            {/* View Mode Toggle Button Group [List] [Map] */}
-            <div className="view-mode-toggle-group">
+            {/* List / Map View Toggle Button Group */}
+            <div className="view-mode-toggle-group" role="group" aria-label="View mode">
               <button
                 type="button"
                 className={`view-mode-btn ${viewMode === 'list' ? 'active' : ''}`}
                 onClick={() => setViewMode('list')}
-                title="View as cards list"
+                title="View as job cards list"
+                aria-pressed={viewMode === 'list'}
               >
-                <ListIcon size={16} />
+                <ListIcon size={15} aria-hidden="true" />
                 <span>List</span>
               </button>
               <button
                 type="button"
                 className={`view-mode-btn ${viewMode === 'map' ? 'active' : ''}`}
                 onClick={() => setViewMode('map')}
-                title="View interactive OpenStreetMap with job pins"
+                title="View interactive OpenStreetMap with job markers"
+                aria-pressed={viewMode === 'map'}
               >
-                <MapIcon size={16} />
+                <MapIcon size={15} aria-hidden="true" />
                 <span>Map ({mapJobs.length})</span>
               </button>
             </div>
           </div>
         </div>
 
-        {/* Main Content Layout */}
-        <div className="jobs-main-layout">
-          {/* Sidebar Filters */}
-          <aside className="jobs-filter-sidebar">
-            <div className="filter-card-head">
-              <span className="filter-card-title">
-                <Filter size={16} /> Filters
-              </span>
-              <button onClick={handleResetFilters} className="filter-reset-link">
-                Reset All
-              </button>
-            </div>
+        {/* ==================================================================
+            3. MAIN CONTENT: FILTERS SIDEBAR + JOB RESULTS
+            ================================================================== */}
+        <div className="jobs-main-content-layout">
+          {/* Desktop Filter Sidebar */}
+          <div className="desktop-filters-wrapper">
+            <JobFilters
+              industries={INDUSTRIES}
+              workModes={WORK_MODES}
+              employmentTypes={EMPLOYMENT_TYPES}
+              selectedIndustry={industry}
+              selectedWorkMode={workMode}
+              selectedEmploymentType={employmentType}
+              selectedCity={city}
+              onIndustryChange={(val) => {
+                setIndustry(val);
+                setPagination((p) => ({ ...p, page: 1 }));
+              }}
+              onWorkModeChange={(val) => {
+                setWorkMode(val);
+                setPagination((p) => ({ ...p, page: 1 }));
+              }}
+              onEmploymentTypeChange={(val) => {
+                setEmploymentType(val);
+                setPagination((p) => ({ ...p, page: 1 }));
+              }}
+              onCityChange={(val) => {
+                setCity(val);
+                setPagination((p) => ({ ...p, page: 1 }));
+              }}
+              onResetFilters={handleResetFilters}
+            />
+          </div>
 
-            {/* Industry Filter */}
-            <div className="filter-section-group">
-              <label className="filter-field-label">Industry Sector</label>
-              <select
-                value={industry}
-                onChange={(e) => {
-                  setIndustry(e.target.value);
-                  setPagination((p) => ({ ...p, page: 1 }));
-                }}
-                className="filter-input-control"
-              >
-                {INDUSTRIES.map((ind) => (
-                  <option key={ind} value={ind}>
-                    {ind}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Work Mode */}
-            <div className="filter-section-group">
-              <label className="filter-field-label">Work Mode</label>
-              <select
-                value={workMode}
-                onChange={(e) => {
-                  setWorkMode(e.target.value);
-                  setPagination((p) => ({ ...p, page: 1 }));
-                }}
-                className="filter-input-control"
-              >
-                {WORK_MODES.map((wm) => (
-                  <option key={wm.value} value={wm.value}>
-                    {wm.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Employment Type */}
-            <div className="filter-section-group">
-              <label className="filter-field-label">Employment Type</label>
-              <select
-                value={employmentType}
-                onChange={(e) => {
-                  setEmploymentType(e.target.value);
-                  setPagination((p) => ({ ...p, page: 1 }));
-                }}
-                className="filter-input-control"
-              >
-                {EMPLOYMENT_TYPES.map((et) => (
-                  <option key={et.value} value={et.value}>
-                    {et.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Quick City Filters */}
-            <div className="filter-section-group">
-              <label className="filter-field-label">Primary Resettlement Hubs</label>
-              <div className="quick-city-tags">
-                {['Bhubaneswar', 'Delhi NCR', 'Pune', 'Bengaluru', 'Hyderabad'].map((c) => (
-                  <button
-                    key={c}
-                    type="button"
-                    className={`city-filter-tag ${city === c ? 'active' : ''}`}
-                    onClick={() => {
-                      setCity(city === c ? 'All' : c);
-                      setPagination((p) => ({ ...p, page: 1 }));
-                    }}
-                  >
-                    {c}
-                  </button>
-                ))}
+          {/* Mobile Filter Drawer & Backdrop */}
+          {mobileFilterOpen && (
+            <>
+              <div
+                className="mobile-filter-backdrop"
+                onClick={() => setMobileFilterOpen(false)}
+                aria-hidden="true"
+              />
+              <div className="mobile-filter-drawer">
+                <JobFilters
+                  industries={INDUSTRIES}
+                  workModes={WORK_MODES}
+                  employmentTypes={EMPLOYMENT_TYPES}
+                  selectedIndustry={industry}
+                  selectedWorkMode={workMode}
+                  selectedEmploymentType={employmentType}
+                  selectedCity={city}
+                  onIndustryChange={(val) => {
+                    setIndustry(val);
+                    setPagination((p) => ({ ...p, page: 1 }));
+                  }}
+                  onWorkModeChange={(val) => {
+                    setWorkMode(val);
+                    setPagination((p) => ({ ...p, page: 1 }));
+                  }}
+                  onEmploymentTypeChange={(val) => {
+                    setEmploymentType(val);
+                    setPagination((p) => ({ ...p, page: 1 }));
+                  }}
+                  onCityChange={(val) => {
+                    setCity(val);
+                    setPagination((p) => ({ ...p, page: 1 }));
+                  }}
+                  onResetFilters={handleResetFilters}
+                  onCloseMobileDrawer={() => setMobileFilterOpen(false)}
+                />
               </div>
-            </div>
-          </aside>
+            </>
+          )}
 
-          {/* Results Area (Map View OR List View) */}
-          <main className="jobs-display-area">
+          {/* Results Display Canvas */}
+          <main className="jobs-display-canvas">
             {loading ? (
-              <div style={{ textAlign: 'center', padding: '4rem 0' }}>
-                <LoadingSpinner size="lg" message="Loading verified defense opportunities..." />
+              /* Loading Skeletons (6 Cards) */
+              <div className="jobs-cards-grid" aria-busy="true" aria-label="Loading job opportunities">
+                {[1, 2, 3, 4, 5, 6].map((i) => (
+                  <JobSkeleton key={i} />
+                ))}
               </div>
             ) : error ? (
-              <div className="jobs-error-card">
-                <ErrorMessage message={error} />
-                <Button variant="secondary" size="sm" icon={RotateCcw} onClick={fetchJobs}>
-                  Try Again
+              /* Error State */
+              <div className="jobs-error-card" role="alert">
+                <AlertCircle size={32} className="error-icon" aria-hidden="true" />
+                <h3 className="error-title">Unable to load opportunities</h3>
+                <p className="error-msg">{error}</p>
+                <Button variant="primary" size="sm" icon={RotateCcw} onClick={fetchJobs}>
+                  Retry
                 </Button>
               </div>
             ) : viewMode === 'map' ? (
-              /* MAP VIEW (Leaflet + OpenStreetMap) */
+              /* Map View (Leaflet + OpenStreetMap) */
               <div className="jobs-map-view-wrapper">
+                <div className="map-wrapper-head">
+                  <div>
+                    <h3 className="map-title">Geographic Opportunity Distribution</h3>
+                    <p className="map-subtitle">
+                      Explore {mapJobs.length} defense opportunities pinned across pan-India resettlement clusters.
+                    </p>
+                  </div>
+                </div>
                 <JobMap
                   jobs={mapJobs.length > 0 ? mapJobs : jobs}
                   userLocation={userLocation}
                   selectedJobId={selectedMapJobId}
                   onSelectJob={(id) => setSelectedMapJobId(id)}
-                  height="600px"
+                  height="580px"
                   searchRadiusKm={selectedRadius !== 'All' ? Number(selectedRadius) : null}
                 />
               </div>
             ) : jobs.length === 0 ? (
-              /* EMPTY STATE */
+              /* Empty State */
               <div className="jobs-empty-state-box">
-                <Briefcase size={44} color="#94A3B8" />
-                <h3>No Jobs Found Matching Criteria</h3>
-                <p>We could not find any active postings matching your search criteria. Try adjusting your filters.</p>
+                <div className="empty-icon-wrapper" aria-hidden="true">
+                  <Briefcase size={32} />
+                </div>
+                <h3 className="empty-heading">No opportunities found</h3>
+                <p className="empty-supporting-text">
+                  Try changing your search or filters to discover more veteran-friendly opportunities.
+                </p>
                 <Button variant="primary" size="sm" onClick={handleResetFilters}>
                   Clear Filters
                 </Button>
               </div>
             ) : (
-              /* LIST VIEW */
-              <div className="jobs-cards-grid">
-                {jobs.map((job) => {
-                  const employerName =
-                    job.employer?.companyName || job.companyName || 'Defense Ready Corporate Recruiter';
+              /* List View (2-Column Job Cards) */
+              <>
+                <div className="jobs-cards-grid">
+                  {jobs.map((job) => (
+                    <JobCard
+                      key={job.id || job._id || job.jobId}
+                      job={job}
+                      onToggleBookmark={handleToggleBookmark}
+                    />
+                  ))}
+                </div>
 
-                  return (
-                    <div key={job._id || job.id || job.jobId} className="job-card-item">
-                      <div className="job-card-top">
-                        <div className="job-card-employer-row">
-                          <div className="employer-avatar-box">
-                            <Building2 size={18} color="#146EF5" />
-                          </div>
-                          <div>
-                            <div className="job-employer-title">{employerName}</div>
-                            <h3 className="job-main-title">{job.title}</h3>
-                          </div>
-                        </div>
-
-                        <button
-                          type="button"
-                          className={`btn-save-bookmark ${job.isSaved ? 'saved' : ''}`}
-                          onClick={() => handleToggleBookmark(job._id || job.id, job.isSaved)}
-                          title={job.isSaved ? 'Remove Bookmark' : 'Save Job'}
-                        >
-                          <Bookmark size={16} />
-                        </button>
-                      </div>
-
-                      <div className="job-metadata-chips">
-                        <span className="meta-chip">
-                          <MapPin size={13} />
-                          {job.city || job.location}, {job.state}
-                        </span>
-                        <span className="meta-chip">
-                          <Clock size={13} />
-                          {(job.employmentType || 'FULL_TIME').replace(/_/g, ' ')}
-                        </span>
-                        {job.workMode && (
-                          <span className="meta-chip">{job.workMode}</span>
-                        )}
-                        {job.distanceText && (
-                          <span className="meta-chip distance-chip">
-                            <Navigation size={11} />
-                            {job.distanceText}
-                          </span>
-                        )}
-                      </div>
-
-                      <p className="job-card-description">
-                        {job.description?.slice(0, 140) || 'Seeking disciplined military veteran with proven leadership and operational experience.'}...
-                      </p>
-
-                      <div className="job-card-bottom-bar">
-                        <div className="job-salary-figure">
-                          {formatSalary(job.salaryMin, job.salaryMax)}
-                        </div>
-                        <Link to={`/jobs/${job.id || job._id || job.jobId}`}>
-                          <Button variant="primary" size="sm" icon={ChevronRight} iconPosition="right">
-                            View Job
-                          </Button>
-                        </Link>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-
-            {/* Pagination Controls */}
-            {viewMode === 'list' && pagination.totalPages > 1 && (
-              <div className="jobs-pagination-bar">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={pagination.page <= 1}
-                  onClick={() => setPagination((p) => ({ ...p, page: p.page - 1 }))}
-                >
-                  Previous
-                </Button>
-                <span className="pagination-page-indicator">
-                  Page <strong>{pagination.page}</strong> of <strong>{pagination.totalPages}</strong>
-                </span>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={pagination.page >= pagination.totalPages}
-                  onClick={() => setPagination((p) => ({ ...p, page: p.page + 1 }))}
-                >
-                  Next
-                </Button>
-              </div>
+                {/* Pagination Controls */}
+                {pagination.totalPages > 1 && (
+                  <div className="jobs-pagination-bar" aria-label="Pagination Navigation">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={pagination.page <= 1}
+                      onClick={() => {
+                        setPagination((p) => ({ ...p, page: p.page - 1 }));
+                        window.scrollTo({ top: 200, behavior: 'smooth' });
+                      }}
+                      aria-label="Previous Page"
+                    >
+                      Previous
+                    </Button>
+                    <span className="pagination-page-indicator">
+                      Page <strong>{pagination.page}</strong> of <strong>{pagination.totalPages}</strong>
+                    </span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={pagination.page >= pagination.totalPages}
+                      onClick={() => {
+                        setPagination((p) => ({ ...p, page: p.page + 1 }));
+                        window.scrollTo({ top: 200, behavior: 'smooth' });
+                      }}
+                      aria-label="Next Page"
+                    >
+                      Next
+                    </Button>
+                  </div>
+                )}
+              </>
             )}
           </main>
         </div>
