@@ -98,47 +98,21 @@ export const AdminLayout = () => {
     navigate(ROUTES.HOME);
   };
 
-  // Structured government navigation groups
-  const navigationGroups = [
-    {
-      groupTitle: 'OVERVIEW',
-      items: [
-        { label: 'Dashboard', path: ROUTES.ADMIN_DASHBOARD, icon: LayoutDashboard },
-      ],
-    },
-    {
-      groupTitle: 'REGISTRATION & VERIFICATION',
-      items: [
-        { label: 'Veterans', path: ROUTES.ADMIN_VETERANS, icon: Users },
-        { label: 'Employers', path: ROUTES.ADMIN_EMPLOYERS, icon: Building2 },
-        { label: 'Documents Vault', path: ROUTES.ADMIN_DOCUMENTS, icon: FileCheck2 },
-      ],
-    },
-    {
-      groupTitle: 'SERVICES & WELFARE',
-      items: [
-        { label: 'Welfare Schemes', path: ROUTES.ADMIN_SCHEMES, icon: Award },
-        { label: 'Scheme Applications', path: ROUTES.ADMIN_SCHEME_APPLICATIONS, icon: FileText },
-        { label: 'Job Moderation', path: ROUTES.ADMIN_JOBS, icon: Briefcase },
-        { label: 'Job Applications', path: ROUTES.ADMIN_JOB_APPLICATIONS, icon: Briefcase },
-      ],
-    },
-    {
-      groupTitle: 'GOVERNANCE & AUDIT',
-      items: [
-        { label: 'Portal Users', path: ROUTES.ADMIN_USERS, icon: Users },
-        { label: 'Reports & Export', path: ROUTES.ADMIN_REPORTS, icon: FileSpreadsheet },
-        { label: 'Analytics & KPIs', path: ROUTES.ADMIN_ANALYTICS, icon: BarChart3 },
-        { label: 'Audit Trail', path: ROUTES.ADMIN_AUDIT_LOGS, icon: ShieldAlert },
-      ],
-    },
-    {
-      groupTitle: 'ADMINISTRATION',
-      items: [
-        { label: 'Notifications', path: ROUTES.ADMIN_NOTIFICATIONS, icon: Bell },
-        { label: 'System Settings', path: ROUTES.ADMIN_SETTINGS, icon: Settings },
-      ],
-    },
+  // Structured government administration navigation items
+  const adminNavItems = [
+    { label: 'Dashboard', path: ROUTES.ADMIN_DASHBOARD, icon: LayoutDashboard },
+    { label: 'Veterans', path: ROUTES.ADMIN_VETERANS, icon: Users },
+    { label: 'Employers', path: ROUTES.ADMIN_EMPLOYERS, icon: Building2 },
+    { label: 'Welfare Schemes', path: ROUTES.ADMIN_SCHEMES, icon: Award },
+    { label: 'Job Moderation', path: ROUTES.ADMIN_JOBS, icon: Briefcase },
+    { label: 'Scheme Applications', path: ROUTES.ADMIN_SCHEME_APPLICATIONS, icon: FileText },
+    { label: 'Job Applications', path: ROUTES.ADMIN_JOB_APPLICATIONS, icon: Briefcase },
+    { label: 'Documents Vault', path: ROUTES.ADMIN_DOCUMENTS, icon: FileCheck2 },
+    { label: 'Portal Users', path: ROUTES.ADMIN_USERS, icon: Users },
+    { label: 'Reports & Export', path: ROUTES.ADMIN_REPORTS, icon: FileSpreadsheet },
+    { label: 'Analytics & KPIs', path: ROUTES.ADMIN_ANALYTICS, icon: BarChart3 },
+    { label: 'Audit Trail', path: ROUTES.ADMIN_AUDIT_LOGS, icon: ShieldAlert },
+    { label: 'Notifications', path: ROUTES.ADMIN_NOTIFICATIONS, icon: Bell },
   ];
 
   const totalResultsCount = searchResults
@@ -150,8 +124,8 @@ export const AdminLayout = () => {
     : 0;
 
   return (
-    <div className={`admin-root ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
-      {/* Mobile Backdrop */}
+    <div className={`admin-gov-root ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+      {/* Mobile Drawer Backdrop */}
       {mobileDrawerOpen && (
         <div
           className="admin-mobile-backdrop"
@@ -160,311 +134,351 @@ export const AdminLayout = () => {
         />
       )}
 
-      {/* Government Institutional Sidebar */}
-      <aside className={`admin-sidebar ${mobileDrawerOpen ? 'drawer-open' : ''}`} aria-label="Administrative Navigation">
-        {/* Sidebar Header with Institutional Branding */}
-        <div className="admin-sidebar-header">
-          <Link to={ROUTES.ADMIN_DASHBOARD} className="admin-brand-link">
-            <div className="admin-brand-icon">
-              <Shield size={20} strokeWidth={2.4} />
-            </div>
-            {!sidebarCollapsed && (
-              <div className="admin-brand-text">
-                <span className="admin-brand-title">VBR PORTAL</span>
-                <span className="admin-brand-subtitle">Veterans Benefits & Resettlement</span>
-              </div>
-            )}
-          </Link>
+      {/* ==================================================================
+          1. TOP HEADER (PROFESSIONAL DARK NAVY GOVERNMENT-STYLE HEADER)
+          ================================================================== */}
+      <header className="admin-gov-topbar" role="banner">
+        <div className="admin-topbar-left">
           <button
             type="button"
-            className="admin-sidebar-collapse-btn"
-            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-            aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            className="admin-mobile-toggle"
+            onClick={() => setMobileDrawerOpen(!mobileDrawerOpen)}
+            aria-label="Toggle navigation drawer"
           >
-            {sidebarCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+            {mobileDrawerOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
+
+          {/* VBR Portal Institutional Branding */}
+          <Link to={ROUTES.ADMIN_DASHBOARD} className="admin-header-brand-link">
+            <Shield size={24} className="admin-header-shield-icon" aria-hidden="true" />
+            <div className="admin-header-titles">
+              <span className="admin-brand-main">VBR PORTAL</span>
+              <span className="admin-brand-sub">Veterans Benefits & Resettlement Portal</span>
+              <span className="admin-brand-dept">Ministry of Defence, Government of India</span>
+            </div>
+          </Link>
         </div>
 
-        {/* Sidebar Nav with Section Headings */}
-        <nav className="admin-sidebar-nav">
-          {navigationGroups.map((group) => (
-            <div key={group.groupTitle} className="admin-nav-group">
+        {/* Global Search in Header */}
+        <div className="admin-topbar-center">
+          <div className="admin-search-container" ref={searchContainerRef}>
+            <div className="admin-search-input-wrapper">
+              <Search size={15} className="admin-search-icon" aria-hidden="true" />
+              <input
+                type="text"
+                className="admin-search-input"
+                placeholder="Search Veterans, Employers, Schemes, Jobs, Applications..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => {
+                  if (searchResults && totalResultsCount > 0) setSearchDropdownOpen(true);
+                }}
+                aria-label="Global portal search"
+              />
+              {searchLoading && <span className="admin-search-spinner" aria-hidden="true" />}
+            </div>
+
+            {/* Live Search Results Dropdown */}
+            {searchDropdownOpen && searchResults && (
+              <div className="admin-search-dropdown" role="region" aria-label="Search results">
+                {totalResultsCount === 0 ? (
+                  <div className="admin-search-empty">
+                    No matching records found for "{searchQuery}"
+                  </div>
+                ) : (
+                  <div className="admin-search-groups">
+                    {searchResults.veterans?.length > 0 && (
+                      <div className="admin-search-group">
+                        <div className="admin-search-group-title">Veterans</div>
+                        {searchResults.veterans.map((v) => (
+                          <Link
+                            key={v.id}
+                            to={v.url}
+                            className="admin-search-item"
+                            onClick={() => setSearchDropdownOpen(false)}
+                          >
+                            <div>
+                              <strong>{v.title}</strong>
+                              <small>{v.subtitle}</small>
+                            </div>
+                            <Badge variant={v.badge === 'VERIFIED' ? 'success' : 'warning'}>
+                              {v.badge}
+                            </Badge>
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+
+                    {searchResults.employers?.length > 0 && (
+                      <div className="admin-search-group">
+                        <div className="admin-search-group-title">Employers</div>
+                        {searchResults.employers.map((e) => (
+                          <Link
+                            key={e.id}
+                            to={e.url}
+                            className="admin-search-item"
+                            onClick={() => setSearchDropdownOpen(false)}
+                          >
+                            <div>
+                              <strong>{e.title}</strong>
+                              <small>{e.subtitle}</small>
+                            </div>
+                            <Badge variant={e.badge === 'VERIFIED' ? 'success' : 'warning'}>
+                              {e.badge}
+                            </Badge>
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+
+                    {searchResults.schemes?.length > 0 && (
+                      <div className="admin-search-group">
+                        <div className="admin-search-group-title">Welfare Schemes</div>
+                        {searchResults.schemes.map((s) => (
+                          <Link
+                            key={s.id}
+                            to={s.url}
+                            className="admin-search-item"
+                            onClick={() => setSearchDropdownOpen(false)}
+                          >
+                            <div>
+                              <strong>{s.title}</strong>
+                              <small>{s.subtitle}</small>
+                            </div>
+                            <Badge variant={s.badge === 'ACTIVE' ? 'success' : 'neutral'}>
+                              {s.badge}
+                            </Badge>
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+
+                    {searchResults.jobs?.length > 0 && (
+                      <div className="admin-search-group">
+                        <div className="admin-search-group-title">Job Postings</div>
+                        {searchResults.jobs.map((j) => (
+                          <Link
+                            key={j.id}
+                            to={j.url}
+                            className="admin-search-item"
+                            onClick={() => setSearchDropdownOpen(false)}
+                          >
+                            <div>
+                              <strong>{j.title}</strong>
+                              <small>{j.subtitle}</small>
+                            </div>
+                            <Badge variant={j.badge === 'ACTIVE' ? 'success' : 'neutral'}>
+                              {j.badge}
+                            </Badge>
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+
+                    {searchResults.applications?.length > 0 && (
+                      <div className="admin-search-group">
+                        <div className="admin-search-group-title">Applications</div>
+                        {searchResults.applications.map((a) => (
+                          <Link
+                            key={a.id}
+                            to={a.url}
+                            className="admin-search-item"
+                            onClick={() => setSearchDropdownOpen(false)}
+                          >
+                            <div>
+                              <strong>{a.title}</strong>
+                              <small>{a.subtitle}</small>
+                            </div>
+                            <Badge variant={a.badge === 'APPROVED' ? 'success' : 'info'}>
+                              {a.badge}
+                            </Badge>
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Topbar Controls Right */}
+        <div className="admin-topbar-right">
+          {/* Go to Public Portal Link */}
+          <Link
+            to={ROUTES.HOME}
+            className="admin-public-portal-link"
+            target="_blank"
+            title="Open Public Resettlement Portal"
+          >
+            <span>Go to Public Portal</span>
+            <ExternalLink size={13} aria-hidden="true" />
+          </Link>
+
+          <div className="admin-topbar-sep" aria-hidden="true" />
+
+          {/* Notifications Bell */}
+          <NotificationBell />
+
+          <div className="admin-topbar-sep" aria-hidden="true" />
+
+          {/* Administrator Profile Pill */}
+          <div className="admin-profile-container" ref={profileDropdownRef}>
+            <button
+              type="button"
+              className="admin-gov-profile-pill"
+              onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+              aria-expanded={profileDropdownOpen}
+              aria-label="Administrator profile menu"
+            >
+              <div className="admin-gov-avatar">
+                {user?.name ? user.name.charAt(0).toUpperCase() : 'A'}
+              </div>
+              <div className="admin-gov-profile-details">
+                <span className="admin-gov-name">{user?.name || 'Administrator'}</span>
+                <span className="admin-gov-role">SUPER ADMIN</span>
+              </div>
+              <ChevronDown size={13} className="admin-chevron" aria-hidden="true" />
+            </button>
+
+            {profileDropdownOpen && (
+              <div className="admin-profile-dropdown" role="menu">
+                <div className="admin-profile-dropdown-header">
+                  <strong>{user?.name || 'Central Administrator'}</strong>
+                  <span>{user?.email}</span>
+                </div>
+                <hr className="admin-dropdown-divider" />
+                <Link
+                  to={ROUTES.ADMIN_SETTINGS}
+                  className="admin-dropdown-item"
+                  role="menuitem"
+                  onClick={() => setProfileDropdownOpen(false)}
+                >
+                  <Settings size={15} />
+                  <span>System Settings</span>
+                </Link>
+                <Link
+                  to={ROUTES.ADMIN_AUDIT_LOGS}
+                  className="admin-dropdown-item"
+                  role="menuitem"
+                  onClick={() => setProfileDropdownOpen(false)}
+                >
+                  <ShieldAlert size={15} />
+                  <span>Audit Trail</span>
+                </Link>
+                <hr className="admin-dropdown-divider" />
+                <button
+                  type="button"
+                  className="admin-dropdown-item admin-dropdown-logout"
+                  role="menuitem"
+                  onClick={handleLogout}
+                >
+                  <LogOut size={15} />
+                  <span>Logout</span>
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </header>
+
+      {/* ==================================================================
+          2. MAIN BODY WRAPPER (FIXED SIDEBAR + MAIN CONTENT CANVAS)
+          ================================================================== */}
+      <div className="admin-gov-body">
+        {/* Left Sidebar */}
+        <aside
+          className={`admin-gov-sidebar ${mobileDrawerOpen ? 'drawer-open' : ''}`}
+          aria-label="Administrative Navigation"
+        >
+          <div className="admin-sidebar-top-row">
+            {!sidebarCollapsed && <span className="admin-sidebar-nav-title">PORTAL NAVIGATION</span>}
+            <button
+              type="button"
+              className="admin-collapse-toggle-btn"
+              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+              title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+              aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            >
+              {sidebarCollapsed ? <ChevronRight size={15} /> : <ChevronLeft size={15} />}
+            </button>
+          </div>
+
+          <nav className="admin-sidebar-nav-container">
+            {/* ADMINISTRATION SECTION */}
+            <div className="admin-nav-section">
               {!sidebarCollapsed && (
-                <div className="admin-nav-group-title">{group.groupTitle}</div>
+                <div className="admin-nav-section-title">ADMINISTRATION</div>
               )}
               <ul className="admin-nav-list">
-                {group.items.map((item) => {
+                {adminNavItems.map((item) => {
                   const Icon = item.icon;
                   return (
                     <li key={item.path}>
                       <NavLink
                         to={item.path}
                         className={({ isActive }) =>
-                          `admin-nav-link ${isActive ? 'active' : ''}`
+                          `admin-sidebar-link ${isActive ? 'active' : ''}`
                         }
                         title={sidebarCollapsed ? item.label : undefined}
                       >
-                        <Icon size={17} className="admin-nav-icon" aria-hidden="true" />
-                        {!sidebarCollapsed && <span className="admin-nav-label">{item.label}</span>}
+                        <Icon size={16} className="sidebar-link-icon" aria-hidden="true" />
+                        {!sidebarCollapsed && (
+                          <span className="sidebar-link-text">{item.label}</span>
+                        )}
                       </NavLink>
                     </li>
                   );
                 })}
               </ul>
             </div>
-          ))}
-        </nav>
 
-        {/* Sidebar Footer */}
-        <div className="admin-sidebar-footer">
-          <button
-            type="button"
-            className="admin-nav-link admin-logout-btn"
-            onClick={handleLogout}
-            title={sidebarCollapsed ? 'Logout' : undefined}
-          >
-            <LogOut size={17} className="admin-nav-icon" aria-hidden="true" />
-            {!sidebarCollapsed && <span className="admin-nav-label">Logout</span>}
-          </button>
-        </div>
-      </aside>
-
-      {/* Main Content Area */}
-      <div className="admin-main-wrapper">
-        {/* Top Government Institutional Header */}
-        <header className="admin-topbar" role="banner">
-          <div className="admin-topbar-left">
-            <button
-              type="button"
-              className="admin-mobile-toggle"
-              onClick={() => setMobileDrawerOpen(!mobileDrawerOpen)}
-              aria-label="Toggle navigation drawer"
-            >
-              {mobileDrawerOpen ? <X size={20} /> : <Menu size={20} />}
-            </button>
-
-            {/* Global Search with Live Dropdown */}
-            <div className="admin-search-container" ref={searchContainerRef}>
-              <div className="admin-search-input-wrapper">
-                <Search size={16} className="admin-search-icon" aria-hidden="true" />
-                <input
-                  type="text"
-                  className="admin-search-input"
-                  placeholder="Search Veterans, Employers, Schemes, Jobs, Applications..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onFocus={() => {
-                    if (searchResults && totalResultsCount > 0) setSearchDropdownOpen(true);
-                  }}
-                  aria-label="Global portal search"
-                />
-                {searchLoading && <span className="admin-search-spinner" aria-hidden="true" />}
-              </div>
-
-              {/* Search Results Dropdown */}
-              {searchDropdownOpen && searchResults && (
-                <div className="admin-search-dropdown" role="region" aria-label="Search results">
-                  {totalResultsCount === 0 ? (
-                    <div className="admin-search-empty">
-                      No matching records found for "{searchQuery}"
-                    </div>
-                  ) : (
-                    <div className="admin-search-groups">
-                      {searchResults.veterans?.length > 0 && (
-                        <div className="admin-search-group">
-                          <div className="admin-search-group-title">Veterans</div>
-                          {searchResults.veterans.map((v) => (
-                            <Link
-                              key={v.id}
-                              to={v.url}
-                              className="admin-search-item"
-                              onClick={() => setSearchDropdownOpen(false)}
-                            >
-                              <div>
-                                <strong>{v.title}</strong>
-                                <small>{v.subtitle}</small>
-                              </div>
-                              <Badge variant={v.badge === 'VERIFIED' ? 'success' : 'warning'}>
-                                {v.badge}
-                              </Badge>
-                            </Link>
-                          ))}
-                        </div>
-                      )}
-
-                      {searchResults.employers?.length > 0 && (
-                        <div className="admin-search-group">
-                          <div className="admin-search-group-title">Employers</div>
-                          {searchResults.employers.map((e) => (
-                            <Link
-                              key={e.id}
-                              to={e.url}
-                              className="admin-search-item"
-                              onClick={() => setSearchDropdownOpen(false)}
-                            >
-                              <div>
-                                <strong>{e.title}</strong>
-                                <small>{e.subtitle}</small>
-                              </div>
-                              <Badge variant={e.badge === 'VERIFIED' ? 'success' : 'warning'}>
-                                {e.badge}
-                              </Badge>
-                            </Link>
-                          ))}
-                        </div>
-                      )}
-
-                      {searchResults.schemes?.length > 0 && (
-                        <div className="admin-search-group">
-                          <div className="admin-search-group-title">Welfare Schemes</div>
-                          {searchResults.schemes.map((s) => (
-                            <Link
-                              key={s.id}
-                              to={s.url}
-                              className="admin-search-item"
-                              onClick={() => setSearchDropdownOpen(false)}
-                            >
-                              <div>
-                                <strong>{s.title}</strong>
-                                <small>{s.subtitle}</small>
-                              </div>
-                              <Badge variant={s.badge === 'ACTIVE' ? 'success' : 'neutral'}>
-                                {s.badge}
-                              </Badge>
-                            </Link>
-                          ))}
-                        </div>
-                      )}
-
-                      {searchResults.jobs?.length > 0 && (
-                        <div className="admin-search-group">
-                          <div className="admin-search-group-title">Job Postings</div>
-                          {searchResults.jobs.map((j) => (
-                            <Link
-                              key={j.id}
-                              to={j.url}
-                              className="admin-search-item"
-                              onClick={() => setSearchDropdownOpen(false)}
-                            >
-                              <div>
-                                <strong>{j.title}</strong>
-                                <small>{j.subtitle}</small>
-                              </div>
-                              <Badge variant={j.badge === 'ACTIVE' ? 'success' : 'neutral'}>
-                                {j.badge}
-                              </Badge>
-                            </Link>
-                          ))}
-                        </div>
-                      )}
-
-                      {searchResults.applications?.length > 0 && (
-                        <div className="admin-search-group">
-                          <div className="admin-search-group-title">Applications</div>
-                          {searchResults.applications.map((a) => (
-                            <Link
-                              key={a.id}
-                              to={a.url}
-                              className="admin-search-item"
-                              onClick={() => setSearchDropdownOpen(false)}
-                            >
-                              <div>
-                                <strong>{a.title}</strong>
-                                <small>{a.subtitle}</small>
-                              </div>
-                              <Badge variant={a.badge === 'APPROVED' ? 'success' : 'info'}>
-                                {a.badge}
-                              </Badge>
-                            </Link>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
+            {/* ACCOUNT SECTION */}
+            <div className="admin-nav-section">
+              {!sidebarCollapsed && (
+                <div className="admin-nav-section-title">ACCOUNT</div>
               )}
-            </div>
-          </div>
-
-          {/* Topbar Controls */}
-          <div className="admin-topbar-right">
-            {/* View Public Portal Link */}
-            <Link to={ROUTES.HOME} className="admin-portal-link" target="_blank" title="Open Public Portal">
-              <span>View Portal</span>
-              <ExternalLink size={13} aria-hidden="true" />
-            </Link>
-
-            <div className="admin-topbar-divider" aria-hidden="true" />
-
-            {/* Notification Bell */}
-            <NotificationBell />
-
-            <div className="admin-topbar-divider" aria-hidden="true" />
-
-            {/* Admin Profile Dropdown */}
-            <div className="admin-profile-menu-container" ref={profileDropdownRef}>
-              <button
-                type="button"
-                className="admin-profile-pill"
-                onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                aria-expanded={profileDropdownOpen}
-                aria-label="Administrator account menu"
-              >
-                <div className="admin-avatar">
-                  {user?.name ? user.name.charAt(0).toUpperCase() : 'A'}
-                </div>
-                <div className="admin-user-info-text">
-                  <span className="admin-name">{user?.name || 'Administrator'}</span>
-                  <span className="admin-role-badge">SUPER ADMIN</span>
-                </div>
-                <ChevronDown size={13} className="admin-dropdown-chevron" aria-hidden="true" />
-              </button>
-
-              {profileDropdownOpen && (
-                <div className="admin-profile-dropdown" role="menu">
-                  <div className="admin-profile-dropdown-header">
-                    <strong>{user?.name || 'Central Administrator'}</strong>
-                    <span>{user?.email}</span>
-                  </div>
-                  <hr className="admin-divider" />
-                  <Link
-                    to={ROUTES.ADMIN_SETTINGS}
-                    className="admin-dropdown-item"
-                    role="menuitem"
-                    onClick={() => setProfileDropdownOpen(false)}
-                  >
-                    <Settings size={15} />
-                    <span>System Settings</span>
-                  </Link>
-                  <Link
-                    to={ROUTES.ADMIN_AUDIT_LOGS}
-                    className="admin-dropdown-item"
-                    role="menuitem"
-                    onClick={() => setProfileDropdownOpen(false)}
-                  >
-                    <ShieldAlert size={15} />
-                    <span>Audit Trail</span>
-                  </Link>
-                  <hr className="admin-divider" />
+              <ul className="admin-nav-list">
+                <li>
                   <button
                     type="button"
-                    className="admin-dropdown-item admin-dropdown-logout"
-                    role="menuitem"
+                    className="admin-sidebar-link admin-sidebar-logout-link"
                     onClick={handleLogout}
+                    title={sidebarCollapsed ? 'Logout' : undefined}
                   >
-                    <LogOut size={15} />
-                    <span>Sign Out</span>
+                    <LogOut size={16} className="sidebar-link-icon" aria-hidden="true" />
+                    {!sidebarCollapsed && (
+                      <span className="sidebar-link-text">Logout</span>
+                    )}
                   </button>
-                </div>
-              )}
+                </li>
+              </ul>
             </div>
-          </div>
-        </header>
+          </nav>
+        </aside>
 
-        {/* Page Main Content */}
-        <main className="admin-content-canvas" id="admin-main-content">
+        {/* Main Content Area */}
+        <main className="admin-gov-content-area" id="admin-main-content">
           <Outlet />
+
+          {/* Institutional Footer */}
+          <footer className="admin-gov-footer" role="contentinfo">
+            <div className="admin-footer-left">
+              <span className="footer-brand">Veterans Benefits & Resettlement Portal (VBR Portal)</span>
+              <span className="footer-sub">Central Administrative Management System • Resettlement & Welfare Operations</span>
+            </div>
+            <div className="admin-footer-right">
+              <span className="footer-security-note">Confidential & Secure Internal Portal • Authorized Personnel Only</span>
+              <div className="footer-links">
+                <Link to={ROUTES.HOME} target="_blank">Public Portal</Link>
+                <span className="footer-sep">•</span>
+                <Link to={ROUTES.ABOUT}>About</Link>
+                <span className="footer-sep">•</span>
+                <Link to={ROUTES.CONTACT}>Help & Support</Link>
+              </div>
+            </div>
+          </footer>
         </main>
       </div>
     </div>
