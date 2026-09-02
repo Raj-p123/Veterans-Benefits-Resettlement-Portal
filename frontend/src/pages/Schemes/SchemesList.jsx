@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Search,
-  SlidersHorizontal,
   X,
   ChevronLeft,
   ChevronRight,
@@ -19,12 +18,12 @@ import {
   FileCheck2,
   CheckCircle2,
   Award,
+  Layers,
 } from 'lucide-react';
 import { schemeService } from '../../services/schemeService.js';
 import Button from '../../components/Button/Button.jsx';
 import SchemeCard from './components/SchemeCard.jsx';
 import SchemeSkeleton from './components/SchemeSkeleton.jsx';
-import QuickBenefitSummary from './components/QuickBenefitSummary.jsx';
 import './SchemesList.css';
 
 const CATEGORIES = [
@@ -283,50 +282,60 @@ export const SchemesList = () => {
 
   const officialExternalSources = externalResults.filter((item) => item.official);
   const additionalExternalSources = externalResults.filter((item) => !item.official);
-  const isSearchActive = Boolean(debouncedQuery && debouncedQuery.trim().length > 0);
+
+  // Calculate dynamic stats from actual existing data
+  const totalSchemesCount = pagination.total;
+  const featuredSchemesCount = portalSchemes.filter((s) => s.isFeatured).length;
+  const availableCategoriesCount = CATEGORIES.length - 1; // excluding 'All'
 
   return (
     <div className="schemes-page-root">
       <div className="schemes-container">
         {/* ==================================================================
-            1. PAGE HERO (DEFENSE WELFARE BENEFITS & SCHEMES)
+            1. PAGE HEADER (DEFENSE WELFARE SCHEMES & PENSION)
             ================================================================== */}
         <section className="schemes-hero-banner" aria-label="Welfare Hero">
           <div className="hero-grid-split">
             <div className="hero-left-info">
               <div className="hero-eyebrow">
                 <ShieldCheck size={14} className="eyebrow-icon" aria-hidden="true" />
-                <span>MINISTRY OF DEFENCE & ARMED FORCES WELFARE</span>
+                <span>MINISTRY OF DEFENCE & CENTRAL ARMED FORCES</span>
               </div>
-              <h1 className="schemes-hero-title">Defense Welfare Benefits & Schemes</h1>
+              <h1 className="schemes-hero-title">Defense Welfare Schemes & Pension</h1>
               <p className="schemes-hero-subtitle">
-                Discover welfare schemes, pension support, healthcare assistance, housing, education and financial benefits available to veterans and their families.
+                Discover verified welfare schemes, pension benefits, healthcare assistance and government support available for veterans and their families.
               </p>
-
-              <div className="hero-trust-row">
-                <span className="trust-indicator-item">
-                  <CheckCircle2 size={13} className="trust-icon" aria-hidden="true" />
-                  <span>Certified Government Portals</span>
-                </span>
-                <span className="trust-indicator-item">
-                  <CheckCircle2 size={13} className="trust-icon" aria-hidden="true" />
-                  <span>Direct Benefit Transfer (DBT)</span>
-                </span>
-                <span className="trust-indicator-item">
-                  <CheckCircle2 size={13} className="trust-icon" aria-hidden="true" />
-                  <span>Official MOD / KSB Sanctions</span>
-                </span>
-              </div>
             </div>
 
-            <div className="hero-right-emblem" aria-hidden="true">
-              <div className="emblem-card">
-                <div className="emblem-icon-circle">
-                  <Award size={28} />
+            {/* Compact Visual Statistic Area */}
+            <div className="hero-stats-cluster" aria-label="Scheme Statistics">
+              <div className="hero-stat-badge">
+                <div className="stat-icon-wrapper theme-navy">
+                  <Award size={16} aria-hidden="true" />
                 </div>
-                <div className="emblem-text-stack">
-                  <span className="emblem-title">Welfare & Resettlement</span>
-                  <span className="emblem-subtitle">Sainik Kalyan Hub</span>
+                <div className="stat-meta-stack">
+                  <span className="stat-number-text">{totalSchemesCount}</span>
+                  <span className="stat-label-text">Total Schemes</span>
+                </div>
+              </div>
+
+              <div className="hero-stat-badge">
+                <div className="stat-icon-wrapper theme-amber">
+                  <Sparkles size={16} aria-hidden="true" />
+                </div>
+                <div className="stat-meta-stack">
+                  <span className="stat-number-text">{featuredSchemesCount}</span>
+                  <span className="stat-label-text">Featured</span>
+                </div>
+              </div>
+
+              <div className="hero-stat-badge">
+                <div className="stat-icon-wrapper theme-blue">
+                  <Layers size={16} aria-hidden="true" />
+                </div>
+                <div className="stat-meta-stack">
+                  <span className="stat-number-text">{availableCategoriesCount}</span>
+                  <span className="stat-label-text">Categories</span>
                 </div>
               </div>
             </div>
@@ -334,20 +343,7 @@ export const SchemesList = () => {
         </section>
 
         {/* ==================================================================
-            2. QUICK BENEFIT SUMMARY (DYNAMIC CARDS)
-            ================================================================== */}
-        <QuickBenefitSummary
-          totalSchemes={pagination.total}
-          portalSchemes={portalSchemes}
-          selectedCategory={selectedCategory}
-          onSelectCategory={(cat) => {
-            setSelectedCategory(cat);
-            setPage(1);
-          }}
-        />
-
-        {/* ==================================================================
-            3. OFFICIAL GUIDANCE NOTICE
+            2. OFFICIAL GUIDANCE NOTICE
             ================================================================== */}
         <div className="official-guidance-banner" role="region" aria-label="Official Guidance Notice">
           <div className="guidance-icon-circle" aria-hidden="true">
@@ -356,27 +352,23 @@ export const SchemesList = () => {
           <div className="guidance-body">
             <span className="guidance-title">Official Guidance</span>
             <p className="guidance-text">
-              Scheme rules, pension entitlements and sanction amounts are determined by the respective awarding authorities (DESW, Kendriya Sainik Board, ECHS, or DGR) after verification of eligible defense records.
+              Scheme rules, pension entitlements and sanction amounts are determined by the respective official awarding authorities after verification.
             </p>
           </div>
         </div>
 
         {/* ==================================================================
-            4. SEARCH EXPERIENCE & CATEGORY NAVIGATION
+            3. SEARCH SECTION & CATEGORY PILLS
             ================================================================== */}
-        <div className="schemes-search-category-card">
-          <div className="search-section-header">
-            <h2 className="search-section-title">Find Benefits That Matter to You</h2>
-          </div>
-
-          {/* Autocomplete Search Field */}
+        <div className="schemes-search-filter-card">
+          {/* Large Search Input */}
           <div className="search-input-wrapper" ref={searchBoxRef}>
             <Search className="search-icon-pos" size={18} aria-hidden="true" />
             <input
               ref={inputRef}
               type="text"
               className="search-input-field"
-              placeholder="Search schemes, pension, healthcare, housing, education..."
+              placeholder="Search schemes by name, keyword, benefits, or jurisdiction..."
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -490,7 +482,9 @@ export const SchemesList = () => {
             ))}
           </div>
 
-          {/* Filter & Refine Section */}
+          {/* ==================================================================
+              4. FILTER TOOLBAR (JURISDICTION, FEATURED ONLY, COUNT)
+              ================================================================== */}
           <div className="filter-and-refine-bar">
             <div className="filter-refine-left">
               <div className="filter-field-pair">
@@ -523,8 +517,8 @@ export const SchemesList = () => {
                     setPage(1);
                   }}
                 />
-                <Sparkles size={12} className="featured-checkbox-icon" aria-hidden="true" />
-                <span>Featured Schemes</span>
+                <Sparkles size={13} className="featured-checkbox-icon" aria-hidden="true" />
+                <span>Featured Only</span>
               </label>
 
               {(selectedCategory !== 'All' || selectedState !== 'All India' || isFeaturedOnly || search) && (
@@ -564,7 +558,7 @@ export const SchemesList = () => {
             5. RESULTS SECTION (SKELETONS, SCHEME CARDS, EXTERNAL SOURCES)
             ================================================================== */}
         {loading ? (
-          /* Skeletons: 6 Cards */
+          /* Skeletons */
           <div className="schemes-grid-canvas" aria-busy="true" aria-label="Loading schemes">
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <SchemeSkeleton key={i} />
@@ -578,15 +572,15 @@ export const SchemesList = () => {
             </div>
             <h3 className="empty-state-heading">No schemes found</h3>
             <p className="empty-state-body">
-              Try changing your search or filters to discover available welfare benefits.
+              Try changing your search or filter criteria.
             </p>
             <Button variant="primary" size="sm" icon={RotateCcw} onClick={handleResetAllFilters}>
-              Clear Filters
+              Reset Filters
             </Button>
           </div>
         ) : (
           <div className="schemes-results-stream">
-            {/* 5A. PORTAL SCHEMES GRID */}
+            {/* 5A. PORTAL SCHEMES GRID (RESPONSIVE MINMAX GRID) */}
             {portalSchemes.length > 0 && (
               <div className="schemes-grid-canvas">
                 {portalSchemes.map((scheme) => (
@@ -636,7 +630,7 @@ export const SchemesList = () => {
               </div>
             )}
 
-            {/* 5B. OFFICIAL GOVERNMENT & DEFENSE EXTERNAL SOURCES (PRESERVED) */}
+            {/* 5B. OFFICIAL GOVERNMENT & DEFENSE EXTERNAL SOURCES */}
             {officialExternalSources.length > 0 && (
               <div className="external-sources-block">
                 <div className="external-section-header">
@@ -680,7 +674,7 @@ export const SchemesList = () => {
               </div>
             )}
 
-            {/* 5C. ADDITIONAL EXTERNAL REFERENCES (PRESERVED) */}
+            {/* 5C. ADDITIONAL EXTERNAL REFERENCES */}
             {additionalExternalSources.length > 0 && (
               <div className="external-sources-block">
                 <div className="external-section-header">
@@ -723,7 +717,7 @@ export const SchemesList = () => {
         )}
 
         {/* ==================================================================
-            6. TRUST & VERIFICATION SECTION (BOTTOM)
+            6. OFFICIAL WELFARE TRUST FOOTER
             ================================================================== */}
         <section className="official-trust-footer-section" aria-label="Official Welfare Information">
           <div className="trust-footer-content">
@@ -733,7 +727,7 @@ export const SchemesList = () => {
             <div className="trust-footer-text">
               <h3 className="trust-footer-title">Official Welfare Information</h3>
               <p className="trust-footer-desc">
-                Eligibility, sanction amounts and final approvals are subject to verification by the relevant authority (Department of Ex-Servicemen Welfare, Kendriya Sainik Board, ECHS, or Directorate General Resettlement).
+                Scheme rules, pension entitlements and sanction amounts are determined by the respective official awarding authorities after verification.
               </p>
             </div>
           </div>

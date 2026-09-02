@@ -245,37 +245,57 @@ export const VeteranDashboard = () => {
               <RecommendationCard
                 type="scheme"
                 tag="WELFARE SCHEME"
-                title={recommendedScheme?.scheme?.name || 'Healthcare Assistance Scheme'}
+                title={recommendedScheme?.name || recommendedScheme?.scheme?.name}
                 description={
-                  recommendedScheme?.scheme?.shortDescription ||
-                  'Comprehensive medical grant and outpatient coverage for eligible defense veterans and dependents.'
+                  recommendedScheme?.shortDescription ||
+                  recommendedScheme?.scheme?.shortDescription
                 }
                 matchPercentage={recommendedScheme?.matchPercentage || 92}
                 linkTo={
-                  recommendedScheme?.scheme?.schemeId
+                  recommendedScheme?.schemeId
+                    ? `/schemes/${recommendedScheme.schemeId}`
+                    : recommendedScheme?.scheme?.schemeId
                     ? `/schemes/${recommendedScheme.scheme.schemeId}`
                     : '/schemes'
                 }
                 buttonText="View Details →"
+                isEmpty={!recommendedScheme}
               />
 
               {/* Job Card */}
               <RecommendationCard
                 type="job"
                 tag="CORPORATE JOB"
-                title={recommendedJob?.job?.title || 'Security Supervisor'}
-                company={recommendedJob?.job?.employer?.companyName || 'Defense Security Systems'}
-                location={
-                  recommendedJob?.job?.city && recommendedJob?.job?.state
-                    ? `${recommendedJob.job.city}, ${recommendedJob.job.state}`
-                    : 'New Delhi'
+                title={recommendedJob?.title || recommendedJob?.job?.title}
+                company={
+                  recommendedJob?.employer?.companyName ||
+                  recommendedJob?.job?.employer?.companyName ||
+                  recommendedJob?.companyName ||
+                  recommendedJob?.job?.companyName
                 }
-                employmentType={recommendedJob?.job?.employmentType || 'Full-time'}
+                location={
+                  (recommendedJob?.city && recommendedJob?.state)
+                    ? `${recommendedJob.city}, ${recommendedJob.state}`
+                    : (recommendedJob?.job?.city && recommendedJob?.job?.state)
+                    ? `${recommendedJob.job.city}, ${recommendedJob.job.state}`
+                    : (recommendedJob?.location || recommendedJob?.job?.location)
+                }
+                employmentType={
+                  recommendedJob?.employmentType ||
+                  recommendedJob?.job?.employmentType
+                }
                 matchPercentage={recommendedJob?.matchPercentage || 87}
                 linkTo={
-                  recommendedJob?.job?.jobId ? `/jobs/${recommendedJob.job.jobId}` : '/jobs'
+                  recommendedJob?.jobId
+                    ? `/jobs/${recommendedJob.jobId}`
+                    : recommendedJob?.job?.jobId
+                    ? `/jobs/${recommendedJob.job.jobId}`
+                    : recommendedJob?._id
+                    ? `/jobs/${recommendedJob._id}`
+                    : '/jobs'
                 }
                 buttonText="View Job →"
+                isEmpty={!recommendedJob}
               />
             </div>
           </section>
@@ -309,14 +329,17 @@ export const VeteranDashboard = () => {
                         <div className="job-details-meta">
                           <span className="meta-company">
                             <Building2 size={12} aria-hidden="true" />{' '}
-                            {job.employer?.companyName || 'Corporate Partner'}
+                            {job.employer?.companyName || job.companyName || 'Corporate Partner'}
                           </span>
                           <span className="meta-divider">•</span>
                           <span className="meta-loc">
-                            <MapPin size={12} aria-hidden="true" /> {job.city}, {job.state}
+                            <MapPin size={12} aria-hidden="true" /> {job.city || job.location || 'Pan-India'}
+                            {job.state ? `, ${job.state}` : ''}
                           </span>
                           <span className="meta-divider">•</span>
-                          <span className="meta-employment">{job.employmentType || 'Full-time'}</span>
+                          <span className="meta-employment">
+                            {(job.employmentType || 'Full-time').replace(/_/g, ' ')}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -324,10 +347,15 @@ export const VeteranDashboard = () => {
                     <div className="job-row-action-side">
                       <div className="job-salary-stack">
                         <span className="salary-label">
-                          ₹{job.salaryMin?.toLocaleString() || '30,000'} – ₹
-                          {job.salaryMax?.toLocaleString() || '45,000'}
+                          {job.salaryMin && job.salaryMax
+                            ? `₹${(job.salaryMin / 100000).toFixed(1)} – ₹${(job.salaryMax / 100000).toFixed(1)} LPA`
+                            : job.salaryMin
+                            ? `₹${(job.salaryMin / 100000).toFixed(1)} LPA+`
+                            : 'Best in Industry'}
                         </span>
-                        <span className="match-tag">90% Match</span>
+                        {job.matchPercentage && (
+                          <span className="match-tag">{job.matchPercentage}% Match</span>
+                        )}
                       </div>
 
                       <Link to={`/jobs/${job.jobId || job._id}`}>
@@ -339,39 +367,17 @@ export const VeteranDashboard = () => {
                   </div>
                 ))
               ) : (
-                <div className="gov-job-row">
-                  <div className="job-row-main">
-                    <div className="job-avatar-box" aria-hidden="true">
-                      <Briefcase size={18} />
-                    </div>
-                    <div className="job-info-stack">
-                      <h3 className="job-title-text">Security & Logistics Supervisor</h3>
-                      <div className="job-details-meta">
-                        <span className="meta-company">
-                          <Building2 size={12} aria-hidden="true" /> Premier Defense Infrastructure
-                        </span>
-                        <span className="meta-divider">•</span>
-                        <span className="meta-loc">
-                          <MapPin size={12} aria-hidden="true" /> New Delhi, Delhi
-                        </span>
-                        <span className="meta-divider">•</span>
-                        <span className="meta-employment">Full-time</span>
-                      </div>
-                    </div>
+                <div className="empty-tracker-card">
+                  <div className="empty-icon-circle" aria-hidden="true">
+                    <Briefcase size={22} />
                   </div>
-
-                  <div className="job-row-action-side">
-                    <div className="job-salary-stack">
-                      <span className="salary-label">₹35,000 – ₹50,000 / month</span>
-                      <span className="match-tag">92% Match</span>
-                    </div>
-
-                    <Link to="/jobs">
-                      <Button variant="primary" size="sm">
-                        View Job
-                      </Button>
-                    </Link>
-                  </div>
+                  <h3 className="empty-title">No job postings available</h3>
+                  <p className="empty-desc">Check back soon for newly verified defense corporate postings.</p>
+                  <Link to="/jobs">
+                    <Button variant="primary" size="sm">
+                      Explore Jobs Board →
+                    </Button>
+                  </Link>
                 </div>
               )}
             </div>

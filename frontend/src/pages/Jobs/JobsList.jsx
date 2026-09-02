@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
 import jobService from '../../services/jobService.js';
 import JobMap from '../../components/Map/JobMap.jsx';
@@ -15,7 +15,8 @@ import {
   X,
   RotateCcw,
   ShieldCheck,
-  Award,
+  Building2,
+  Sparkles,
 } from 'lucide-react';
 import Button from '../../components/Button/Button.jsx';
 import JobCard from './components/JobCard.jsx';
@@ -243,39 +244,97 @@ export const JobsList = () => {
     userLocation !== null,
   ].filter(Boolean).length;
 
+  // Dynamic Statistics from actual existing data
+  const totalJobsCount = pagination.total;
+  const uniqueCompaniesCount = new Set(
+    jobs.map((j) => j.employer?.companyName || j.companyName).filter(Boolean)
+  ).size;
+  const uniqueLocationsCount = new Set(
+    jobs.map((j) => j.city || j.location).filter(Boolean)
+  ).size;
+
   return (
     <div className="jobs-page-root">
       <div className="jobs-container">
         {/* ==================================================================
-            1. PAGE HEADER / HERO SECTION (DEFENSE THEME)
+            1. JOBS HERO SECTION (DEFENSE THEME WITH STATS & SEARCH)
             ================================================================== */}
         <section className="jobs-hero-banner" aria-label="Jobs Hero">
-          <div className="hero-badge-row">
-            <span className="gov-seal-badge">
-              <ShieldCheck size={14} className="gov-seal-icon" aria-hidden="true" />
-              <span>DEFENSE RESETTLEMENT & EMPLOYMENT COMMAND</span>
-            </span>
+          <div className="hero-grid-split">
+            <div className="hero-left-col">
+              <div className="hero-badge-row">
+                <span className="gov-seal-badge">
+                  <ShieldCheck size={14} className="gov-seal-icon" aria-hidden="true" />
+                  <span>DEFENSE RESETTLEMENT & EMPLOYMENT COMMAND</span>
+                </span>
+              </div>
+
+              <h1 className="jobs-hero-title">Defense Veteran Career & Resettlement Portal</h1>
+              <p className="jobs-hero-subtitle">
+                Verified corporate opportunities tailored for Indian Armed Forces veterans across aerospace, defense manufacturing, physical security, logistics, and technology.
+              </p>
+
+              {/* Dynamic Job Statistics */}
+              <div className="hero-stats-cluster">
+                <div className="hero-stat-box theme-navy">
+                  <Briefcase size={16} className="stat-box-icon" aria-hidden="true" />
+                  <div className="stat-box-meta">
+                    <span className="stat-box-val">{totalJobsCount}</span>
+                    <span className="stat-box-label">Total Jobs</span>
+                  </div>
+                </div>
+
+                {uniqueCompaniesCount > 0 && (
+                  <div className="hero-stat-box theme-blue">
+                    <Building2 size={16} className="stat-box-icon" aria-hidden="true" />
+                    <div className="stat-box-meta">
+                      <span className="stat-box-val">{uniqueCompaniesCount}</span>
+                      <span className="stat-box-label">Companies</span>
+                    </div>
+                  </div>
+                )}
+
+                {uniqueLocationsCount > 0 && (
+                  <div className="hero-stat-box theme-amber">
+                    <MapPin size={16} className="stat-box-icon" aria-hidden="true" />
+                    <div className="stat-box-meta">
+                      <span className="stat-box-val">{uniqueLocationsCount}</span>
+                      <span className="stat-box-label">Locations</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Defense Geometric Illustration Graphic (Pure CSS & SVG) */}
+            <div className="hero-right-illustration" aria-hidden="true">
+              <div className="defense-emblem-card">
+                <div className="emblem-outer-ring">
+                  <div className="emblem-inner-shield">
+                    <ShieldCheck size={36} strokeWidth={2} />
+                  </div>
+                </div>
+                <div className="emblem-sub-tag">
+                  <Sparkles size={12} />
+                  <span>MOD Verified Resettlement</span>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <h1 className="jobs-hero-title">Veteran Career & Resettlement</h1>
-          <p className="jobs-hero-subtitle">
-            Verified career opportunities for Indian Armed Forces veterans.
-          </p>
-          <p className="jobs-hero-support-text">
-            Discover defense, aerospace, security, technology, logistics and other career opportunities matched to your experience and skills.
-          </p>
-
-          {/* Integrated Modern Job Search Bar */}
+          {/* ==================================================================
+              2. INTEGRATED UNIFIED SEARCH BAR
+              ================================================================== */}
           <form onSubmit={handleSearchSubmit} className="jobs-search-bar-unified" role="search">
             <div className="search-bar-field keyword-field">
               <Search size={18} className="search-field-icon" aria-hidden="true" />
               <input
                 type="text"
-                placeholder="Job title, skill, role..."
+                placeholder="Job title, skills or role..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="unified-search-input"
-                aria-label="Job title, skill, or role"
+                aria-label="Job title, skills or role"
               />
             </div>
 
@@ -285,16 +344,16 @@ export const JobsList = () => {
               <MapPin size={18} className="search-field-icon" aria-hidden="true" />
               <input
                 type="text"
-                placeholder="City, state or location..."
+                placeholder="City or state..."
                 value={locationSearch}
                 onChange={(e) => setLocationSearch(e.target.value)}
                 className="unified-search-input"
-                aria-label="City, state or location"
+                aria-label="City or state"
               />
             </div>
 
             <div className="search-bar-actions">
-              <Button type="submit" variant="primary" size="md">
+              <Button type="submit" variant="primary" size="md" icon={Search}>
                 Search Jobs
               </Button>
               <button
@@ -347,7 +406,27 @@ export const JobsList = () => {
         </section>
 
         {/* ==================================================================
-            2. RESULTS TOOLBAR (STATUS, RADIUS, SORT, LIST/MAP SWITCHER)
+            3. TOP CATEGORIES ROW (CONNECTED TO EXISTING INDUSTRY FILTER)
+            ================================================================== */}
+        <div className="jobs-category-pills-bar" role="navigation" aria-label="Top Job Categories">
+          {INDUSTRIES.map((cat) => (
+            <button
+              key={cat}
+              type="button"
+              className={`jobs-category-pill ${industry === cat ? 'active' : ''}`}
+              onClick={() => {
+                setIndustry(cat);
+                setPagination((p) => ({ ...p, page: 1 }));
+              }}
+              aria-pressed={industry === cat}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        {/* ==================================================================
+            4. RESULTS TOOLBAR (STATUS, RADIUS, SORT, LIST/MAP SWITCHER)
             ================================================================== */}
         <div className="jobs-toolbar-row">
           <div className="toolbar-left-stats">
@@ -440,7 +519,7 @@ export const JobsList = () => {
         </div>
 
         {/* ==================================================================
-            3. MAIN CONTENT: FILTERS SIDEBAR + JOB RESULTS
+            5. MAIN CONTENT: FILTERS SIDEBAR + JOB RESULTS
             ================================================================== */}
         <div className="jobs-main-content-layout">
           {/* Desktop Filter Sidebar */}
@@ -516,7 +595,7 @@ export const JobsList = () => {
           {/* Results Display Canvas */}
           <main className="jobs-display-canvas">
             {loading ? (
-              /* Loading Skeletons (6 Cards) */
+              /* Loading Skeletons */
               <div className="jobs-cards-grid" aria-busy="true" aria-label="Loading job opportunities">
                 {[1, 2, 3, 4, 5, 6].map((i) => (
                   <JobSkeleton key={i} />
@@ -533,7 +612,7 @@ export const JobsList = () => {
                 </Button>
               </div>
             ) : viewMode === 'map' ? (
-              /* Map View (Leaflet + OpenStreetMap) */
+              /* Map View */
               <div className="jobs-map-view-wrapper">
                 <div className="map-wrapper-head">
                   <div>
@@ -558,16 +637,16 @@ export const JobsList = () => {
                 <div className="empty-icon-wrapper" aria-hidden="true">
                   <Briefcase size={32} />
                 </div>
-                <h3 className="empty-heading">No opportunities found</h3>
+                <h3 className="empty-heading">No jobs found</h3>
                 <p className="empty-supporting-text">
-                  Try changing your search or filters to discover more veteran-friendly opportunities.
+                  Try changing your search or filter criteria.
                 </p>
                 <Button variant="primary" size="sm" onClick={handleResetFilters}>
                   Clear Filters
                 </Button>
               </div>
             ) : (
-              /* List View (2-Column Job Cards) */
+              /* List View (Responsive Job Cards Grid) */
               <>
                 <div className="jobs-cards-grid">
                   {jobs.map((job) => (

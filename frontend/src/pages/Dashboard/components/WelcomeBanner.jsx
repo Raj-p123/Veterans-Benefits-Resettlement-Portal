@@ -11,7 +11,7 @@ export const WelcomeBanner = ({ userName = 'Veteran', verificationStatus = 'PEND
       <div className="hero-text-block">
         <div className="hero-eyebrow">
           <ShieldCheck size={14} className="hero-eyebrow-icon" aria-hidden="true" />
-          <span>INDIAN DEFENSE SERVICES PORTAL</span>
+          <span>MINISTRY OF DEFENSE • VETERAN SERVICES PORTAL</span>
         </div>
         <h1 className="hero-greeting">Welcome back, {firstName}! 👋</h1>
         <p className="hero-tagline">
@@ -39,7 +39,7 @@ export const WelcomeBanner = ({ userName = 'Veteran', verificationStatus = 'PEND
         </div>
         <span className="status-card-subtext">
           {isVerified
-            ? 'Military credentials verified'
+            ? 'Military service verified'
             : isRejected
             ? 'Please re-upload identity documents'
             : 'Service verification in review'}

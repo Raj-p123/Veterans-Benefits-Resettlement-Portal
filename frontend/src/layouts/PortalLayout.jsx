@@ -15,7 +15,6 @@ import {
   ChevronDown,
   Menu,
   X,
-  PlusCircle,
   Users,
   Settings,
   HelpCircle,
@@ -34,12 +33,18 @@ export const PortalLayout = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Drawer state: DEFAULT CLOSED
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  // Responsive default: open on wide screens (>= 1200px), closed on smaller screens
+  const [sidebarOpen, setSidebarOpen] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth >= 1200;
+    }
+    return true;
+  });
+
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  
-  const drawerRef = useRef(null);
+
+  const sidebarRef = useRef(null);
   const profileMenuRef = useRef(null);
 
   // Close dropdown on outside click
@@ -53,11 +58,13 @@ export const PortalLayout = ({ children }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Close drawer on Escape key press
+  // Close menus on Escape key
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
-        setDrawerOpen(false);
+        if (window.innerWidth < 992) {
+          setSidebarOpen(false);
+        }
         setProfileDropdownOpen(false);
       }
     };
@@ -65,9 +72,11 @@ export const PortalLayout = ({ children }) => {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Close drawer on route navigation
+  // Close mobile drawer on route navigation
   useEffect(() => {
-    setDrawerOpen(false);
+    if (window.innerWidth < 992) {
+      setSidebarOpen(false);
+    }
     setProfileDropdownOpen(false);
   }, [location.pathname]);
 
@@ -161,171 +170,44 @@ export const PortalLayout = ({ children }) => {
   };
 
   return (
-    <div className="authenticated-portal-layout">
-      {/* 1. Minimal Top Header */}
-      <header className="portal-top-header">
-        <div className="portal-header-left">
-          {/* Hamburger Menu Toggle Button */}
-          <button
-            type="button"
-            className="portal-hamburger-btn"
-            onClick={() => setDrawerOpen(!drawerOpen)}
-            aria-label={drawerOpen ? 'Close navigation' : 'Open navigation'}
-            aria-expanded={drawerOpen}
-          >
-            {drawerOpen ? <X size={22} /> : <Menu size={22} />}
-          </button>
-
-          {/* Portal Brand Link: Navigates to Authenticated Home/Dashboard */}
-          <Link to={authenticatedHomeRoute} className="portal-brand-header-link">
-            <div className="portal-header-brand-icon">
-              <Shield size={18} strokeWidth={2.5} />
-            </div>
-            <span className="portal-header-brand-title">VBR Portal</span>
-          </Link>
-        </div>
-
-        {/* Center Search Bar */}
-        <div className="portal-header-center">
-          <form className="portal-search-form" onSubmit={handleGlobalSearch}>
-            <Search size={15} className="portal-search-icon" />
-            <input
-              type="text"
-              className="portal-search-input"
-              placeholder="Search benefits, jobs, schemes..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </form>
-        </div>
-
-        {/* Right User Controls */}
-        <div className="portal-header-right">
-          {isAuthenticated && user ? (
-            <>
-              {/* Notification Bell */}
-              <NotificationBell />
-
-              {/* Profile Pill & Dropdown */}
-              <div className="portal-profile-menu-container" ref={profileMenuRef}>
-                <button
-                  type="button"
-                  className="portal-profile-pill"
-                  onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                  aria-label="User profile menu"
-                  aria-expanded={profileDropdownOpen}
-                >
-                  <div className="portal-avatar">{getUserInitials()}</div>
-                  <div className="portal-user-meta-text">
-                    <span className="portal-user-name">{user.name?.split(' ')[0] || user.name}</span>
-                    <span className="portal-user-role">{getRoleDisplayName()}</span>
-                  </div>
-                  <ChevronDown size={14} className="portal-dropdown-arrow" />
-                </button>
-
-                {/* Dropdown Menu */}
-                {profileDropdownOpen && (
-                  <div className="portal-dropdown-card">
-                    <div className="portal-dropdown-user-info">
-                      <strong>{user.name}</strong>
-                      <small>{user.email}</small>
-                    </div>
-
-                    <div className="portal-dropdown-divider" />
-
-                    <Link
-                      to={authenticatedHomeRoute}
-                      className="portal-dropdown-item"
-                      onClick={() => setProfileDropdownOpen(false)}
-                    >
-                      <LayoutDashboard size={15} />
-                      <span>Dashboard</span>
-                    </Link>
-
-                    <Link
-                      to={getProfilePath()}
-                      className="portal-dropdown-item"
-                      onClick={() => setProfileDropdownOpen(false)}
-                    >
-                      <User size={15} />
-                      <span>My Profile</span>
-                    </Link>
-
-                    {isVeteran && (
-                      <>
-                        <Link
-                          to={ROUTES.VETERAN_APPLICATIONS}
-                          className="portal-dropdown-item"
-                          onClick={() => setProfileDropdownOpen(false)}
-                        >
-                          <FileCheck2 size={15} />
-                          <span>My Applications</span>
-                        </Link>
-                        <Link
-                          to={ROUTES.VETERAN_DOCUMENTS}
-                          className="portal-dropdown-item"
-                          onClick={() => setProfileDropdownOpen(false)}
-                        >
-                          <FileText size={15} />
-                          <span>Documents Vault</span>
-                        </Link>
-                      </>
-                    )}
-
-                    <div className="portal-dropdown-divider" />
-
-                    <button
-                      type="button"
-                      className="portal-dropdown-item text-danger"
-                      onClick={handleLogout}
-                    >
-                      <LogOut size={15} />
-                      <span>Sign Out</span>
-                    </button>
-                  </div>
-                )}
-              </div>
-            </>
-          ) : (
-            <div className="portal-guest-actions">
-              <Link to={ROUTES.LOGIN} className="btn btn-sm btn-secondary">
-                Login
-              </Link>
-              <Link to={ROUTES.REGISTER} className="btn btn-sm btn-primary">
-                Get Started
-              </Link>
-            </div>
-          )}
-        </div>
-      </header>
-
-      {/* 2. Slide-in Dark Navy Navigation Drawer */}
+    <div className={`portal-app-root ${sidebarOpen ? 'sidebar-expanded' : 'sidebar-collapsed'}`}>
+      {/* 1. Left Collapsible Sidebar */}
       <aside
-        ref={drawerRef}
-        className={`portal-slide-drawer ${drawerOpen ? 'drawer-visible' : ''}`}
-        aria-hidden={!drawerOpen}
+        ref={sidebarRef}
+        className={`portal-sidebar ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}
+        aria-label="Portal Navigation"
       >
-        {/* Drawer Header */}
-        <div className="drawer-header">
-          <Link to={authenticatedHomeRoute} className="drawer-brand-link" onClick={() => setDrawerOpen(false)}>
-            <div className="drawer-brand-icon">
+        {/* Sidebar Header with Brand & Close Button */}
+        <div className="portal-sidebar-header">
+          <Link
+            to={authenticatedHomeRoute}
+            className="portal-sidebar-brand"
+            onClick={() => {
+              if (window.innerWidth < 992) setSidebarOpen(false);
+            }}
+          >
+            <div className="portal-sidebar-brand-icon">
               <Shield size={18} strokeWidth={2.5} />
             </div>
-            <span className="drawer-brand-title">VBR PORTAL</span>
+            <div className="portal-sidebar-brand-text">
+              <span className="portal-sidebar-brand-title">VBR PORTAL</span>
+              <span className="portal-sidebar-brand-sub">DEFENSE WELFARE</span>
+            </div>
           </Link>
+
           <button
             type="button"
-            className="drawer-close-btn"
-            onClick={() => setDrawerOpen(false)}
-            aria-label="Close navigation"
+            className="portal-sidebar-close-btn"
+            onClick={() => setSidebarOpen(false)}
+            aria-label="Collapse navigation"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 
-        {/* Drawer Navigation Links */}
-        <nav className="drawer-nav">
-          <ul className="drawer-nav-list">
+        {/* Sidebar Nav Links */}
+        <nav className="portal-sidebar-nav">
+          <ul className="portal-sidebar-nav-list">
             {navItems.map((item, idx) => {
               const Icon = item.icon;
               const isExact =
@@ -334,18 +216,20 @@ export const PortalLayout = ({ children }) => {
                 item.path === ROUTES.ADMIN_DASHBOARD ||
                 item.path === ROUTES.EMPLOYER_DASHBOARD;
               return (
-                <li key={idx} className="drawer-nav-item">
+                <li key={idx} className="portal-sidebar-nav-item">
                   <NavLink
                     to={item.path}
                     end={isExact}
                     className={({ isActive }) =>
-                      `drawer-nav-link ${isActive ? 'active' : ''}`
+                      `portal-sidebar-nav-link ${isActive ? 'active' : ''}`
                     }
-                    onClick={() => setDrawerOpen(false)}
+                    onClick={() => {
+                      if (window.innerWidth < 992) setSidebarOpen(false);
+                    }}
                   >
-                    <Icon size={18} className="drawer-nav-icon" />
-                    <span className="drawer-nav-label">{item.label}</span>
-                    {item.badge && <span className="drawer-nav-badge">{item.badge}</span>}
+                    <Icon size={18} className="portal-sidebar-nav-icon" />
+                    <span className="portal-sidebar-nav-label">{item.label}</span>
+                    {item.badge && <span className="portal-sidebar-nav-badge">{item.badge}</span>}
                   </NavLink>
                 </li>
               );
@@ -353,32 +237,168 @@ export const PortalLayout = ({ children }) => {
           </ul>
         </nav>
 
-        {/* Drawer Footer with Logout */}
+        {/* Sidebar Footer with Logout */}
         {isAuthenticated && (
-          <div className="drawer-footer">
-            <button type="button" className="drawer-logout-btn" onClick={handleLogout}>
+          <div className="portal-sidebar-footer">
+            <button type="button" className="portal-sidebar-logout-btn" onClick={handleLogout}>
               <LogOut size={16} />
-              <span>Logout</span>
+              <span>Sign Out</span>
             </button>
           </div>
         )}
       </aside>
 
-      {/* 3. Backdrop Overlay for Drawer */}
-      {drawerOpen && (
+      {/* Mobile Drawer Backdrop (< 992px) */}
+      {sidebarOpen && (
         <div
-          className="portal-drawer-backdrop"
-          onClick={() => setDrawerOpen(false)}
+          className="portal-mobile-backdrop"
+          onClick={() => setSidebarOpen(false)}
           aria-hidden="true"
         />
       )}
 
-      {/* 4. Main Full-Width Portal Content Canvas */}
-      <main className="portal-content-canvas">
-        <div className="portal-content-inner">
-          {children}
-        </div>
-      </main>
+      {/* 2. Main Content Wrapper: Always takes remaining space with flex: 1; min-width: 0 */}
+      <div className="portal-main-wrapper">
+        {/* Sticky Top Header */}
+        <header className="portal-top-header">
+          <div className="portal-header-left">
+            <button
+              type="button"
+              className="portal-hamburger-btn"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              aria-label={sidebarOpen ? 'Collapse navigation' : 'Expand navigation'}
+              aria-expanded={sidebarOpen}
+            >
+              <Menu size={20} />
+            </button>
+
+            <Link to={authenticatedHomeRoute} className="portal-header-brand-link">
+              <div className="portal-header-brand-icon">
+                <Shield size={18} strokeWidth={2.5} />
+              </div>
+              <span className="portal-header-brand-title">VBR Portal</span>
+            </Link>
+          </div>
+
+          {/* Center Search Bar */}
+          <div className="portal-header-center">
+            <form className="portal-search-form" onSubmit={handleGlobalSearch}>
+              <Search size={15} className="portal-search-icon" />
+              <input
+                type="text"
+                className="portal-search-input"
+                placeholder="Search benefits, jobs, schemes..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </form>
+          </div>
+
+          {/* Right User Controls */}
+          <div className="portal-header-right">
+            {isAuthenticated && user ? (
+              <>
+                <NotificationBell />
+
+                <div className="portal-profile-menu-container" ref={profileMenuRef}>
+                  <button
+                    type="button"
+                    className="portal-profile-pill"
+                    onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+                    aria-label="User profile menu"
+                    aria-expanded={profileDropdownOpen}
+                  >
+                    <div className="portal-avatar">{getUserInitials()}</div>
+                    <div className="portal-user-meta-text">
+                      <span className="portal-user-name">{user.name?.split(' ')[0] || user.name}</span>
+                      <span className="portal-user-role">{getRoleDisplayName()}</span>
+                    </div>
+                    <ChevronDown size={14} className="portal-dropdown-arrow" />
+                  </button>
+
+                  {/* Dropdown Card */}
+                  {profileDropdownOpen && (
+                    <div className="portal-dropdown-card">
+                      <div className="portal-dropdown-user-info">
+                        <strong>{user.name}</strong>
+                        <small>{user.email}</small>
+                      </div>
+
+                      <div className="portal-dropdown-divider" />
+
+                      <Link
+                        to={authenticatedHomeRoute}
+                        className="portal-dropdown-item"
+                        onClick={() => setProfileDropdownOpen(false)}
+                      >
+                        <LayoutDashboard size={15} />
+                        <span>Dashboard</span>
+                      </Link>
+
+                      <Link
+                        to={getProfilePath()}
+                        className="portal-dropdown-item"
+                        onClick={() => setProfileDropdownOpen(false)}
+                      >
+                        <User size={15} />
+                        <span>My Profile</span>
+                      </Link>
+
+                      {isVeteran && (
+                        <>
+                          <Link
+                            to={ROUTES.VETERAN_APPLICATIONS}
+                            className="portal-dropdown-item"
+                            onClick={() => setProfileDropdownOpen(false)}
+                          >
+                            <FileCheck2 size={15} />
+                            <span>My Applications</span>
+                          </Link>
+                          <Link
+                            to={ROUTES.VETERAN_DOCUMENTS}
+                            className="portal-dropdown-item"
+                            onClick={() => setProfileDropdownOpen(false)}
+                          >
+                            <FileText size={15} />
+                            <span>Documents Vault</span>
+                          </Link>
+                        </>
+                      )}
+
+                      <div className="portal-dropdown-divider" />
+
+                      <button
+                        type="button"
+                        className="portal-dropdown-item text-danger"
+                        onClick={handleLogout}
+                      >
+                        <LogOut size={15} />
+                        <span>Sign Out</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </>
+            ) : (
+              <div className="portal-guest-actions">
+                <Link to={ROUTES.LOGIN} className="btn btn-sm btn-secondary">
+                  Login
+                </Link>
+                <Link to={ROUTES.REGISTER} className="btn btn-sm btn-primary">
+                  Get Started
+                </Link>
+              </div>
+            )}
+          </div>
+        </header>
+
+        {/* Main Content Area */}
+        <main className="portal-content-canvas" id="portal-main-content">
+          <div className="portal-content-inner">
+            {children}
+          </div>
+        </main>
+      </div>
 
       {/* Global Real-Time Notification Toasts */}
       <NotificationToastContainer />

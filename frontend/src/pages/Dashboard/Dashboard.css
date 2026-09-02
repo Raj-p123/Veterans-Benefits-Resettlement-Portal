@@ -1,7 +1,7 @@
 /* ==========================================================================
-   VETERAN DASHBOARD — INDIAN DEFENSE & GOVERNMENT PORTAL STYLESHEET
-   Palette: Deep Navy Blue (#071B3A) + Royal Blue (#146EF5) + Light Slate Canvas
-   Design Philosophy: Trustworthy, Secure, Government-Grade, Accessible, Clean
+   VETERAN DASHBOARD — INDIAN DEFENSE & GOVERNMENT SERVICES PORTAL
+   Design: Indian Government Portal + Defense Services + Premium Banking Dashboard
+   Palette: Deep Navy Blue (#071B3A), Royal Blue (#146EF5), Canvas (#F8FAFC)
    ========================================================================== */
 
 .veteran-dashboard-page {
@@ -19,20 +19,22 @@
 }
 
 /* --------------------------------------------------------------------------
-   1. HERO / WELCOME AREA
+   1. HERO / WELCOME BANNER
    -------------------------------------------------------------------------- */
 .veteran-hero-banner {
   background: #FFFFFF;
   border: 1px solid #E2E8F0;
   border-left: 4px solid #071B3A;
-  border-radius: 8px;
-  padding: 1.375rem 1.75rem;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  border-radius: 14px;
+  padding: 1.5rem 1.875rem;
+  box-shadow: 0 1px 3px rgba(7, 27, 58, 0.04);
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1.5rem;
   flex-wrap: wrap;
+  position: relative;
+  overflow: hidden;
 }
 
 .hero-text-block {
@@ -49,7 +51,7 @@
   color: #146EF5;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.35rem;
 }
 
 .hero-eyebrow-icon {
@@ -57,10 +59,10 @@
 }
 
 .hero-greeting {
-  font-size: 1.4375rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: #071B3A;
-  margin: 0 0 0.3rem 0;
+  margin: 0 0 0.35rem 0;
   letter-spacing: -0.02em;
 }
 
@@ -69,20 +71,20 @@
   color: #475569;
   margin: 0;
   line-height: 1.5;
-  max-width: 620px;
+  max-width: 640px;
 }
 
-/* Status Card on Right */
+/* Account Status Card */
 .hero-status-card {
   background: #F8FAFC;
   border: 1px solid #E2E8F0;
-  border-radius: 8px;
-  padding: 0.8125rem 1.125rem;
-  min-width: 230px;
-  max-width: 280px;
+  border-radius: 10px;
+  padding: 0.875rem 1.25rem;
+  min-width: 240px;
+  max-width: 290px;
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: 0.35rem;
 }
 
 .status-card-header {
@@ -97,10 +99,10 @@
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
-  padding: 0.2rem 0.625rem;
-  border-radius: 4px;
+  padding: 0.25rem 0.625rem;
+  border-radius: 6px;
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 700;
   width: fit-content;
 }
 
@@ -111,7 +113,7 @@
 }
 
 .status-pill.pending {
-  background-color: #FEF3C7;
+  background-color: #FFFBEB;
   color: #B45309;
   border: 1px solid #FDE68A;
 }
@@ -128,7 +130,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   2. QUICK STATISTICS (4 CARDS)
+   2. QUICK STATISTICS (4 PREMIUM CARDS)
    -------------------------------------------------------------------------- */
 .stats-cards-grid {
   display: grid;
@@ -139,20 +141,20 @@
 .veteran-stat-card {
   background-color: #FFFFFF;
   border: 1px solid #E2E8F0;
-  border-radius: 8px;
-  padding: 1.125rem 1.25rem;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+  border-radius: 14px;
+  padding: 1.25rem 1.375rem;
+  box-shadow: 0 1px 3px rgba(7, 27, 58, 0.04);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: all 0.18s ease;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
   position: relative;
 }
 
 .veteran-stat-card:hover {
   border-color: #CBD5E1;
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
-  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(7, 27, 58, 0.07);
+  transform: translateY(-2px);
 }
 
 .stat-header {
@@ -164,60 +166,65 @@
 
 .stat-category-label {
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 700;
   color: #64748B;
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
 
 .stat-icon-box {
-  width: 34px;
-  height: 34px;
-  border-radius: 6px;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  border: 1px solid transparent;
 }
 
 .stat-icon-blue {
   background-color: #EFF6FF;
+  border-color: #DBEAFE;
   color: #146EF5;
 }
 
 .stat-icon-green {
   background-color: #ECFDF5;
+  border-color: #A7F3D0;
   color: #059669;
 }
 
 .stat-icon-purple {
   background-color: #F5F3FF;
+  border-color: #DDD6FE;
   color: #7C3AED;
 }
 
 .stat-icon-amber {
-  background-color: #FEF3C7;
+  background-color: #FFFBEB;
+  border-color: #FDE68A;
   color: #D97706;
 }
 
 .stat-number {
-  font-size: 1.875rem;
-  font-weight: 700;
+  font-size: 2rem;
+  font-weight: 800;
   color: #071B3A;
   line-height: 1.1;
   letter-spacing: -0.02em;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.25rem;
 }
 
 .stat-short-desc {
   font-size: 0.75rem;
   color: #64748B;
-  margin: 0 0 0.625rem 0;
-  line-height: 1.35;
+  margin: 0 0 0.75rem 0;
+  line-height: 1.4;
 }
 
 .stat-footer {
-  padding-top: 0.625rem;
+  padding-top: 0.75rem;
   border-top: 1px solid #F1F5F9;
 }
 
@@ -235,11 +242,6 @@
 .stat-link:hover {
   color: #0D5DD6;
   transform: translateX(2px);
-}
-
-.stat-link:focus-visible {
-  outline: 2px solid #146EF5;
-  outline-offset: 2px;
 }
 
 /* --------------------------------------------------------------------------
@@ -285,15 +287,15 @@
 }
 
 .block-title {
-  font-size: 1rem;
+  font-size: 1.0625rem;
   font-weight: 700;
   color: #071B3A;
-  margin: 0 0 0.15rem 0;
+  margin: 0 0 0.2rem 0;
   letter-spacing: 0.01em;
 }
 
 .block-subtitle {
-  font-size: 0.75rem;
+  font-size: 0.78125rem;
   color: #64748B;
   margin: 0;
 }
@@ -326,26 +328,27 @@
 .gov-recommendation-card {
   background-color: #FFFFFF;
   border: 1px solid #E2E8F0;
-  border-radius: 8px;
-  padding: 1.25rem 1.375rem;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  border-radius: 14px;
+  padding: 1.375rem 1.5rem;
+  box-shadow: 0 1px 3px rgba(7, 27, 58, 0.04);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: all 0.18s ease;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
   position: relative;
 }
 
 .gov-recommendation-card:hover {
   border-color: #CBD5E1;
-  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+  box-shadow: 0 8px 24px rgba(7, 27, 58, 0.07);
+  transform: translateY(-2px);
 }
 
 .rec-top-banner {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.875rem;
 }
 
 .rec-tag {
@@ -353,7 +356,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  padding: 0.2rem 0.5rem;
+  padding: 0.2rem 0.55rem;
   border-radius: 4px;
 }
 
@@ -392,25 +395,25 @@
 }
 
 .match-num {
-  font-size: 0.6875rem;
-  font-weight: 700;
+  font-size: 0.71875rem;
+  font-weight: 800;
   color: #071B3A;
 }
 
 .match-word {
   font-size: 0.5rem;
   color: #64748B;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 
 .rec-content-area {
-  margin-bottom: 1rem;
+  margin-bottom: 1.125rem;
 }
 
 .rec-opportunity-title {
-  font-size: 0.9375rem;
+  font-size: 1rem;
   font-weight: 700;
   color: #071B3A;
   margin: 0 0 0.4rem 0;
@@ -435,19 +438,19 @@
   flex-wrap: wrap;
   font-size: 0.75rem;
   color: #64748B;
-  margin-top: 0.5rem;
+  margin-top: 0.625rem;
 }
 
 .rec-meta-item {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.3rem;
 }
 
 .rec-employment-pill {
   background: #F1F5F9;
   color: #475569;
-  padding: 0.1rem 0.45rem;
+  padding: 0.15rem 0.5rem;
   border-radius: 4px;
   font-size: 0.6875rem;
   font-weight: 600;
@@ -460,18 +463,30 @@
   border-top: 1px solid #F1F5F9;
 }
 
+.rec-empty-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94A3B8;
+}
+
 /* --------------------------------------------------------------------------
    6. APPLICATION TRACKING (4-STAGE PROGRESS TRACKER)
    -------------------------------------------------------------------------- */
 .gov-application-card {
   background-color: #FFFFFF;
   border: 1px solid #E2E8F0;
-  border-radius: 8px;
-  padding: 1.25rem 1.375rem;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  border-radius: 14px;
+  padding: 1.375rem 1.5rem;
+  box-shadow: 0 1px 3px rgba(7, 27, 58, 0.04);
   display: flex;
   flex-direction: column;
-  gap: 1.125rem;
+  gap: 1.25rem;
 }
 
 .app-card-top-info {
@@ -492,15 +507,15 @@
   font-weight: 700;
   color: #146EF5;
   background-color: #EFF6FF;
-  padding: 0.15rem 0.45rem;
+  padding: 0.15rem 0.5rem;
   border-radius: 4px;
   display: inline-block;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.35rem;
   letter-spacing: 0.02em;
 }
 
 .app-scheme-name {
-  font-size: 0.9375rem;
+  font-size: 1rem;
   font-weight: 700;
   color: #071B3A;
   margin: 0;
@@ -518,9 +533,9 @@
   color: #94A3B8;
 }
 
-/* Horizontal Tracker on Desktop */
+/* Horizontal Tracker */
 .gov-tracker-wrapper {
-  padding-top: 0.875rem;
+  padding-top: 1rem;
   border-top: 1px solid #F1F5F9;
 }
 
@@ -548,8 +563,8 @@
 }
 
 .tracker-node {
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -646,15 +661,15 @@
 }
 
 .tracker-completed .tracker-stage-label {
-  color: #0F172A;
+  color: #071B3A;
 }
 
 /* Empty Tracker State */
 .empty-tracker-card {
   background-color: #FFFFFF;
   border: 1px dashed #CBD5E1;
-  border-radius: 8px;
-  padding: 2rem 1.5rem;
+  border-radius: 14px;
+  padding: 2.25rem 1.5rem;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -663,8 +678,8 @@
 }
 
 .empty-icon-circle {
-  width: 48px;
-  height: 48px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   background-color: #EFF6FF;
   color: #146EF5;
@@ -693,12 +708,12 @@
 .gov-widget-card {
   background-color: #FFFFFF;
   border: 1px solid #E2E8F0;
-  border-radius: 8px;
-  padding: 1.125rem 1.25rem;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+  border-radius: 14px;
+  padding: 1.25rem 1.375rem;
+  box-shadow: 0 1px 3px rgba(7, 27, 58, 0.04);
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.875rem;
 }
 
 .widget-header {
@@ -720,7 +735,7 @@
   font-weight: 700;
   color: #146EF5;
   background-color: #EFF6FF;
-  padding: 0.15rem 0.45rem;
+  padding: 0.15rem 0.5rem;
   border-radius: 4px;
 }
 
@@ -760,7 +775,7 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.45rem;
 }
 
 .profile-checklist-item {
@@ -798,12 +813,12 @@
 }
 
 .checklist-text.text-done {
-  color: #0F172A;
+  color: #071B3A;
   font-weight: 600;
 }
 
 .widget-footer-action {
-  padding-top: 0.5rem;
+  padding-top: 0.625rem;
   border-top: 1px solid #F1F5F9;
 }
 
@@ -832,8 +847,8 @@
   display: flex;
   align-items: center;
   gap: 0.625rem;
-  padding: 0.5rem 0.625rem;
-  border-radius: 6px;
+  padding: 0.5625rem 0.75rem;
+  border-radius: 8px;
   background-color: #F8FAFC;
   border: 1px solid #E2E8F0;
   text-decoration: none;
@@ -847,8 +862,34 @@
   transform: translateX(2px);
 }
 
-.quick-action-row-item:focus-visible {
-  outline: 2px solid #146EF5;
+.action-icon-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.action-navy {
+  background-color: #EFF6FF;
+  color: #071B3A;
+}
+
+.action-blue {
+  background-color: #EFF6FF;
+  color: #146EF5;
+}
+
+.action-green {
+  background-color: #ECFDF5;
+  color: #059669;
+}
+
+.action-purple {
+  background-color: #F5F3FF;
+  color: #7C3AED;
 }
 
 .action-row-text {
@@ -888,10 +929,10 @@
 }
 
 .update-item-card {
-  padding: 0.625rem;
+  padding: 0.6875rem;
   background-color: #F8FAFC;
   border: 1px solid #E2E8F0;
-  border-radius: 6px;
+  border-radius: 8px;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
@@ -924,13 +965,13 @@
 }
 
 .badge-amber {
-  background-color: #FEF3C7;
+  background-color: #FFFBEB;
   color: #B45309;
 }
 
 .badge-navy {
   background-color: #E2E8F0;
-  color: #0F172A;
+  color: #071B3A;
 }
 
 .update-date {
@@ -940,7 +981,7 @@
 
 .update-title {
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 700;
   color: #071B3A;
   margin: 0;
   line-height: 1.3;
@@ -958,7 +999,7 @@
 }
 
 .updates-empty-card {
-  padding: 1rem 0.5rem;
+  padding: 1.25rem 0.5rem;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -971,7 +1012,7 @@
 }
 
 .updates-empty-text {
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   color: #64748B;
   margin: 0;
 }
@@ -988,9 +1029,9 @@
 .gov-job-row {
   background-color: #FFFFFF;
   border: 1px solid #E2E8F0;
-  border-radius: 8px;
-  padding: 0.875rem 1.125rem;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.02);
+  border-radius: 12px;
+  padding: 0.9375rem 1.25rem;
+  box-shadow: 0 1px 3px rgba(7, 27, 58, 0.02);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1000,7 +1041,7 @@
 
 .gov-job-row:hover {
   border-color: #CBD5E1;
-  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.05);
+  box-shadow: 0 4px 12px rgba(7, 27, 58, 0.06);
 }
 
 .job-row-main {
@@ -1012,9 +1053,9 @@
 }
 
 .job-avatar-box {
-  width: 36px;
-  height: 36px;
-  border-radius: 6px;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
   background-color: #F8FAFC;
   border: 1px solid #E2E8F0;
   display: flex;
@@ -1033,7 +1074,7 @@
 
 .job-title-text {
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 700;
   color: #071B3A;
   margin: 0;
   white-space: nowrap;
@@ -1067,7 +1108,7 @@
   padding: 0.1rem 0.4rem;
   border-radius: 4px;
   font-size: 0.6875rem;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .job-row-action-side {
@@ -1101,7 +1142,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   9. RESPONSIVE BREAKPOINTS (NO HORIZONTAL OVERFLOW AT ANY WIDTH)
+   9. RESPONSIVE BREAKPOINTS (NO HORIZONTAL OVERFLOW AT ANY RESOLUTION)
    -------------------------------------------------------------------------- */
 @media (max-width: 1120px) {
   .dashboard-content-split {
@@ -1174,15 +1215,15 @@
   }
 
   .tracker-node-col {
-    width: 24px;
+    width: 26px;
     height: auto;
     flex-direction: column;
     justify-content: flex-start;
   }
 
   .tracker-connector {
-    top: 24px;
-    left: 11px;
+    top: 26px;
+    left: 12px;
     width: 2px;
     height: calc(100% + 1.25rem);
     transform: none;
@@ -1202,6 +1243,6 @@
   }
 
   .hero-greeting {
-    font-size: 1.25rem;
+    font-size: 1.3rem;
   }
 }
