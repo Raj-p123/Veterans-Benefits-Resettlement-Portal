@@ -7,17 +7,17 @@ import {
   Award,
   FileText,
   FileCheck2,
-  ShieldAlert,
+  ShieldCheck,
   CheckCircle,
   XCircle,
   AlertTriangle,
   ArrowRight,
-  TrendingUp,
-  Clock,
-  ExternalLink,
   RefreshCw,
   PlusCircle,
-  Sparkles,
+  FileSpreadsheet,
+  BarChart3,
+  Calendar,
+  ExternalLink,
 } from 'lucide-react';
 import { adminService } from '../../../services/adminService.js';
 import { useSocket } from '../../../context/SocketContext.jsx';
@@ -92,340 +92,477 @@ export const AdminDashboard = () => {
 
   if (loading) {
     return (
-      <div className="admin-page-loading">
-        <LoadingSpinner size="lg" text="Loading administrative dashboard metrics..." />
+      <div className="admin-page-loading" role="status" aria-live="polite">
+        <LoadingSpinner size="lg" text="Retrieving central administration records..." />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="admin-page-error">
+      <div className="admin-page-error" role="alert">
         <ErrorMessage message={error} onRetry={() => fetchStats()} />
       </div>
     );
   }
 
   const pending = stats?.pendingBreakdown || { veterans: 0, employers: 0, documents: 0 };
-  const totalPending = (stats?.pendingVerifications || 0);
+  const totalPending = stats?.pendingVerifications || 0;
 
   return (
     <div className="admin-dashboard-page">
-      {/* Page Header */}
-      <div className="admin-header-row">
-        <div>
-          <h1 className="admin-page-title">Administrator Command Center</h1>
-          <p className="admin-page-subtitle">
-            Live portal governance, verification pipelines, welfare administration, and operational metrics.
+      {/* ==================================================================
+          1. FORMAL ADMINISTRATIVE HEADING BLOCK
+          ================================================================== */}
+      <section className="admin-gov-header-card" aria-label="Administrative Header">
+        <div className="admin-gov-header-main">
+          <div className="gov-dept-eyebrow">
+            <ShieldCheck size={14} className="dept-eyebrow-icon" aria-hidden="true" />
+            <span>ADMINISTRATOR COMMAND CENTER</span>
+          </div>
+          <h1 className="admin-gov-title">Veterans Benefits & Resettlement Portal</h1>
+          <p className="admin-gov-subtitle">
+            Central administrative dashboard for veteran verification, welfare schemes, employment services and portal operations.
           </p>
         </div>
-        <div className="admin-header-actions">
-          <div className={`admin-live-badge ${livePulse ? 'pulsing' : ''}`}>
-            <span className="live-dot" />
-            <span>Live Sync Active</span>
+
+        <div className="admin-gov-header-aside">
+          <div className={`gov-live-sync-indicator ${livePulse ? 'pulsing' : ''}`}>
+            <span className="gov-pulse-dot" aria-hidden="true" />
+            <span className="gov-pulse-label">Live Sync Active</span>
           </div>
           <Button
             variant="secondary"
             size="sm"
             icon={RefreshCw}
             onClick={() => fetchStats()}
+            title={`Last synchronized: ${lastRefreshed.toLocaleTimeString('en-GB')}`}
           >
             Refresh Data
           </Button>
         </div>
-      </div>
+      </section>
 
-      {/* Actionable Pending Verification Alert */}
+      {/* ==================================================================
+          2. IMPORTANT PENDING ACTION NOTICE (OFFICIAL ALERT PANEL)
+          ================================================================== */}
       {totalPending > 0 && (
-        <div className="admin-alert-banner">
-          <div className="admin-alert-icon">
-            <AlertTriangle size={24} />
+        <section className="gov-pending-action-panel" role="alert" aria-label="Action items pending review">
+          <div className="gov-alert-header-row">
+            <div className="gov-alert-title-wrap">
+              <AlertTriangle size={18} className="gov-alert-lead-icon" aria-hidden="true" />
+              <h2 className="gov-alert-heading">
+                Action Items Pending Departmental Review ({totalPending})
+              </h2>
+            </div>
           </div>
-          <div className="admin-alert-content">
-            <h3>{totalPending} Action Items Pending Departmental Review</h3>
-            <p>
-              There are <strong>{pending.veterans}</strong> veteran profiles,{' '}
-              <strong>{pending.employers}</strong> employer registrations, and{' '}
-              <strong>{pending.documents}</strong> supporting documents awaiting official scrutiny.
-            </p>
-          </div>
-          <div className="admin-alert-links">
+
+          <p className="gov-alert-desc">
+            Official scrutiny is required for <strong>{pending.veterans}</strong> veteran profile{pending.veterans === 1 ? '' : 's'},{' '}
+            <strong>{pending.employers}</strong> corporate employer registration{pending.employers === 1 ? '' : 's'}, and{' '}
+            <strong>{pending.documents}</strong> pending document verification{pending.documents === 1 ? '' : 's'}.
+          </p>
+
+          <div className="gov-alert-actions-row">
             {pending.veterans > 0 && (
-              <Link to={`${ROUTES.ADMIN_VETERANS}?verificationStatus=PENDING`} className="admin-alert-btn">
-                Verify Veterans ({pending.veterans})
+              <Link
+                to={`${ROUTES.ADMIN_VETERANS}?verificationStatus=PENDING`}
+                className="gov-alert-action-btn"
+              >
+                <span>Verify Veterans</span>
+                <span className="gov-badge-count">{pending.veterans}</span>
               </Link>
             )}
             {pending.employers > 0 && (
-              <Link to={`${ROUTES.ADMIN_EMPLOYERS}?verificationStatus=PENDING`} className="admin-alert-btn">
-                Verify Employers ({pending.employers})
+              <Link
+                to={`${ROUTES.ADMIN_EMPLOYERS}?verificationStatus=PENDING`}
+                className="gov-alert-action-btn"
+              >
+                <span>Verify Employers</span>
+                <span className="gov-badge-count">{pending.employers}</span>
               </Link>
             )}
             {pending.documents > 0 && (
-              <Link to={`${ROUTES.ADMIN_DOCUMENTS}?verificationStatus=UPLOADED`} className="admin-alert-btn">
-                Review Documents ({pending.documents})
+              <Link
+                to={`${ROUTES.ADMIN_DOCUMENTS}?verificationStatus=UPLOADED`}
+                className="gov-alert-action-btn"
+              >
+                <span>Review Documents</span>
+                <span className="gov-badge-count">{pending.documents}</span>
               </Link>
             )}
           </div>
-        </div>
+        </section>
       )}
 
-      {/* KPI Stats Grid */}
-      <div className="admin-stats-grid">
-        {/* Total Veterans */}
-        <div className="admin-stat-card">
-          <div className="admin-stat-top">
-            <span className="admin-stat-label">Total Veterans</span>
-            <div className="admin-stat-icon-wrap icon-blue">
-              <Users size={20} />
-            </div>
-          </div>
-          <div className="admin-stat-number">{stats?.veterans || 0}</div>
-          <div className="admin-stat-bottom">
-            <span className="admin-stat-pill pill-warning">
-              {pending.veterans} Pending Verification
-            </span>
-            <Link to={ROUTES.ADMIN_VETERANS} className="admin-stat-link">
-              Manage <ArrowRight size={13} />
-            </Link>
-          </div>
+      {/* ==================================================================
+          3. STATISTICS SECTION (FORMAL INFORMATION BLOCKS)
+          ================================================================== */}
+      <section className="gov-stats-section" aria-label="Portal Metrics and Statistics">
+        <div className="gov-section-header">
+          <h2 className="gov-section-title">PORTAL METRICS & OPERATIONAL STATISTICS</h2>
+          <span className="gov-section-meta">Official Consolidated Overview</span>
         </div>
 
-        {/* Total Employers */}
-        <div className="admin-stat-card">
-          <div className="admin-stat-top">
-            <span className="admin-stat-label">Corporate Employers</span>
-            <div className="admin-stat-icon-wrap icon-gold">
-              <Building2 size={20} />
+        <div className="gov-stats-grid">
+          {/* 1. Total Veterans */}
+          <div className="gov-kpi-block theme-blue">
+            <div className="gov-kpi-header">
+              <span className="gov-kpi-title">TOTAL VETERANS</span>
+              <div className="gov-kpi-icon-container" aria-hidden="true">
+                <Users size={16} />
+              </div>
+            </div>
+            <div className="gov-kpi-val">{stats?.veterans ?? 0}</div>
+            <div className="gov-kpi-footer">
+              <span className="gov-kpi-subtext">
+                {pending.veterans} Pending Verification
+              </span>
+              <Link to={ROUTES.ADMIN_VETERANS} className="gov-kpi-link">
+                Manage →
+              </Link>
             </div>
           </div>
-          <div className="admin-stat-number">{stats?.employers || 0}</div>
-          <div className="admin-stat-bottom">
-            <span className="admin-stat-pill pill-warning">
-              {pending.employers} Pending
-            </span>
-            <Link to={ROUTES.ADMIN_EMPLOYERS} className="admin-stat-link">
-              Manage <ArrowRight size={13} />
-            </Link>
-          </div>
-        </div>
 
-        {/* Active Jobs */}
-        <div className="admin-stat-card">
-          <div className="admin-stat-top">
-            <span className="admin-stat-label">Active Job Openings</span>
-            <div className="admin-stat-icon-wrap icon-purple">
-              <Briefcase size={20} />
+          {/* 2. Corporate Employers */}
+          <div className="gov-kpi-block theme-amber">
+            <div className="gov-kpi-header">
+              <span className="gov-kpi-title">CORPORATE EMPLOYERS</span>
+              <div className="gov-kpi-icon-container" aria-hidden="true">
+                <Building2 size={16} />
+              </div>
+            </div>
+            <div className="gov-kpi-val">{stats?.employers ?? 0}</div>
+            <div className="gov-kpi-footer">
+              <span className="gov-kpi-subtext">
+                {pending.employers} Pending Review
+              </span>
+              <Link to={ROUTES.ADMIN_EMPLOYERS} className="gov-kpi-link">
+                Manage →
+              </Link>
             </div>
           </div>
-          <div className="admin-stat-number">{stats?.activeJobs || 0}</div>
-          <div className="admin-stat-bottom">
-            <span className="admin-stat-meta">{stats?.totalJobs || 0} Total Listings</span>
-            <Link to={ROUTES.ADMIN_JOBS} className="admin-stat-link">
-              Moderate <ArrowRight size={13} />
-            </Link>
-          </div>
-        </div>
 
-        {/* Total Schemes */}
-        <div className="admin-stat-card">
-          <div className="admin-stat-top">
-            <span className="admin-stat-label">Welfare Schemes</span>
-            <div className="admin-stat-icon-wrap icon-green">
-              <Award size={20} />
+          {/* 3. Active Job Openings */}
+          <div className="gov-kpi-block theme-purple">
+            <div className="gov-kpi-header">
+              <span className="gov-kpi-title">ACTIVE JOB OPENINGS</span>
+              <div className="gov-kpi-icon-container" aria-hidden="true">
+                <Briefcase size={16} />
+              </div>
+            </div>
+            <div className="gov-kpi-val">{stats?.activeJobs ?? 0}</div>
+            <div className="gov-kpi-footer">
+              <span className="gov-kpi-subtext">
+                {stats?.totalJobs ?? 0} Total Listings
+              </span>
+              <Link to={ROUTES.ADMIN_JOBS} className="gov-kpi-link">
+                Moderate →
+              </Link>
             </div>
           </div>
-          <div className="admin-stat-number">{stats?.schemes || 0}</div>
-          <div className="admin-stat-bottom">
-            <span className="admin-stat-meta">{stats?.activeSchemes || 0} Active Schemes</span>
-            <Link to={ROUTES.ADMIN_SCHEMES} className="admin-stat-link">
-              Configure <ArrowRight size={13} />
-            </Link>
-          </div>
-        </div>
 
-        {/* Scheme Applications */}
-        <div className="admin-stat-card">
-          <div className="admin-stat-top">
-            <span className="admin-stat-label">Scheme Applications</span>
-            <div className="admin-stat-icon-wrap icon-teal">
-              <FileText size={20} />
+          {/* 4. Welfare Schemes */}
+          <div className="gov-kpi-block theme-green">
+            <div className="gov-kpi-header">
+              <span className="gov-kpi-title">WELFARE SCHEMES</span>
+              <div className="gov-kpi-icon-container" aria-hidden="true">
+                <Award size={16} />
+              </div>
+            </div>
+            <div className="gov-kpi-val">{stats?.schemes ?? 0}</div>
+            <div className="gov-kpi-footer">
+              <span className="gov-kpi-subtext">
+                {stats?.activeSchemes ?? 0} Active Schemes
+              </span>
+              <Link to={ROUTES.ADMIN_SCHEMES} className="gov-kpi-link">
+                Configure →
+              </Link>
             </div>
           </div>
-          <div className="admin-stat-number">{stats?.schemeApplications || 0}</div>
-          <div className="admin-stat-bottom">
-            <span className="admin-stat-meta">Welfare Claims</span>
-            <Link to={ROUTES.ADMIN_SCHEME_APPLICATIONS} className="admin-stat-link">
-              Review <ArrowRight size={13} />
-            </Link>
-          </div>
-        </div>
 
-        {/* Job Applications */}
-        <div className="admin-stat-card">
-          <div className="admin-stat-top">
-            <span className="admin-stat-label">Job Applications</span>
-            <div className="admin-stat-icon-wrap icon-indigo">
-              <Briefcase size={20} />
+          {/* 5. Scheme Applications */}
+          <div className="gov-kpi-block theme-blue">
+            <div className="gov-kpi-header">
+              <span className="gov-kpi-title">SCHEME APPLICATIONS</span>
+              <div className="gov-kpi-icon-container" aria-hidden="true">
+                <FileText size={16} />
+              </div>
+            </div>
+            <div className="gov-kpi-val">{stats?.schemeApplications ?? 0}</div>
+            <div className="gov-kpi-footer">
+              <span className="gov-kpi-subtext">Welfare Claims</span>
+              <Link to={ROUTES.ADMIN_SCHEME_APPLICATIONS} className="gov-kpi-link">
+                Review →
+              </Link>
             </div>
           </div>
-          <div className="admin-stat-number">{stats?.jobApplications || 0}</div>
-          <div className="admin-stat-bottom">
-            <span className="admin-stat-meta">Recruitment Pipelines</span>
-            <Link to={ROUTES.ADMIN_JOB_APPLICATIONS} className="admin-stat-link">
-              Monitor <ArrowRight size={13} />
-            </Link>
-          </div>
-        </div>
 
-        {/* Approved Applications */}
-        <div className="admin-stat-card">
-          <div className="admin-stat-top">
-            <span className="admin-stat-label">Approved Applications</span>
-            <div className="admin-stat-icon-wrap icon-emerald">
-              <CheckCircle size={20} />
+          {/* 6. Job Applications */}
+          <div className="gov-kpi-block theme-blue">
+            <div className="gov-kpi-header">
+              <span className="gov-kpi-title">JOB APPLICATIONS</span>
+              <div className="gov-kpi-icon-container" aria-hidden="true">
+                <Briefcase size={16} />
+              </div>
+            </div>
+            <div className="gov-kpi-val">{stats?.jobApplications ?? 0}</div>
+            <div className="gov-kpi-footer">
+              <span className="gov-kpi-subtext">Recruitment Pipelines</span>
+              <Link to={ROUTES.ADMIN_JOB_APPLICATIONS} className="gov-kpi-link">
+                Monitor →
+              </Link>
             </div>
           </div>
-          <div className="admin-stat-number">{stats?.approvedApplications || 0}</div>
-          <div className="admin-stat-bottom">
-            <span className="admin-stat-pill pill-success">Disbursed / Selected</span>
-            <Link to={ROUTES.ADMIN_ANALYTICS} className="admin-stat-link">
-              Analytics <ArrowRight size={13} />
-            </Link>
-          </div>
-        </div>
 
-        {/* Rejected Applications */}
-        <div className="admin-stat-card">
-          <div className="admin-stat-top">
-            <span className="admin-stat-label">Rejected / Non-Eligible</span>
-            <div className="admin-stat-icon-wrap icon-rose">
-              <XCircle size={20} />
+          {/* 7. Approved Applications */}
+          <div className="gov-kpi-block theme-green">
+            <div className="gov-kpi-header">
+              <span className="gov-kpi-title">APPROVED APPLICATIONS</span>
+              <div className="gov-kpi-icon-container" aria-hidden="true">
+                <CheckCircle size={16} />
+              </div>
+            </div>
+            <div className="gov-kpi-val">{stats?.approvedApplications ?? 0}</div>
+            <div className="gov-kpi-footer">
+              <span className="gov-kpi-subtext status-green">
+                Disbursed / Selected
+              </span>
+              <Link to={ROUTES.ADMIN_ANALYTICS} className="gov-kpi-link">
+                Analytics →
+              </Link>
             </div>
           </div>
-          <div className="admin-stat-number">{stats?.rejectedApplications || 0}</div>
-          <div className="admin-stat-bottom">
-            <span className="admin-stat-meta">Claims & Job Matches</span>
-            <Link to={ROUTES.ADMIN_ANALYTICS} className="admin-stat-link">
-              Reports <ArrowRight size={13} />
-            </Link>
+
+          {/* 8. Rejected / Non-Eligible */}
+          <div className="gov-kpi-block theme-red">
+            <div className="gov-kpi-header">
+              <span className="gov-kpi-title">REJECTED / NON-ELIGIBLE</span>
+              <div className="gov-kpi-icon-container" aria-hidden="true">
+                <XCircle size={16} />
+              </div>
+            </div>
+            <div className="gov-kpi-val">{stats?.rejectedApplications ?? 0}</div>
+            <div className="gov-kpi-footer">
+              <span className="gov-kpi-subtext status-red">
+                Claims & Job Matches
+              </span>
+              <Link to={ROUTES.ADMIN_REPORTS} className="gov-kpi-link">
+                Reports →
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Quick Action Shortcuts */}
-      <div className="admin-quick-actions-bar">
-        <h3 className="admin-section-title">Quick Operational Actions</h3>
-        <div className="admin-quick-buttons">
-          <Link to={ROUTES.ADMIN_SCHEME_CREATE}>
-            <Button variant="primary" size="sm" icon={PlusCircle}>
-              Add New Scheme
-            </Button>
+      {/* ==================================================================
+          4. OPERATIONAL SECTION (QUICK ACTIONS)
+          ================================================================== */}
+      <section className="gov-operations-section" aria-label="Administrative Actions">
+        <div className="gov-section-header">
+          <h2 className="gov-section-title">QUICK OPERATIONAL ACTIONS</h2>
+          <span className="gov-section-meta">Administrative Shortcuts & Workflows</span>
+        </div>
+
+        <div className="gov-actions-toolbar">
+          <Link to={ROUTES.ADMIN_VETERANS} className="gov-action-tile">
+            <Users size={16} className="tile-icon" aria-hidden="true" />
+            <div className="tile-content">
+              <span className="tile-title">Verify Veterans</span>
+              <span className="tile-sub">Service record verification</span>
+            </div>
           </Link>
-          <Link to={ROUTES.ADMIN_VETERANS}>
-            <Button variant="secondary" size="sm" icon={Users}>
-              Verify Veteran Records
-            </Button>
+
+          <Link to={ROUTES.ADMIN_EMPLOYERS} className="gov-action-tile">
+            <Building2 size={16} className="tile-icon" aria-hidden="true" />
+            <div className="tile-content">
+              <span className="tile-title">Verify Employers</span>
+              <span className="tile-sub">Corporate partner validation</span>
+            </div>
           </Link>
-          <Link to={ROUTES.ADMIN_DOCUMENTS}>
-            <Button variant="secondary" size="sm" icon={FileCheck2}>
-              Scrutinize Documents
-            </Button>
+
+          <Link to={ROUTES.ADMIN_DOCUMENTS} className="gov-action-tile">
+            <FileCheck2 size={16} className="tile-icon" aria-hidden="true" />
+            <div className="tile-content">
+              <span className="tile-title">Review Documents</span>
+              <span className="tile-sub">ID & pension certification</span>
+            </div>
           </Link>
-          <Link to={ROUTES.ADMIN_REPORTS}>
-            <Button variant="secondary" size="sm" icon={FileText}>
-              Generate CSV Reports
-            </Button>
+
+          <Link to={ROUTES.ADMIN_SCHEME_APPLICATIONS} className="gov-action-tile">
+            <FileText size={16} className="tile-icon" aria-hidden="true" />
+            <div className="tile-content">
+              <span className="tile-title">Review Scheme Applications</span>
+              <span className="tile-sub">Welfare claim adjudication</span>
+            </div>
           </Link>
-          <Link to={ROUTES.ADMIN_ANALYTICS}>
-            <Button variant="secondary" size="sm" icon={TrendingUp}>
-              View Analytics & Trends
-            </Button>
+
+          <Link to={ROUTES.ADMIN_JOBS} className="gov-action-tile">
+            <Briefcase size={16} className="tile-icon" aria-hidden="true" />
+            <div className="tile-content">
+              <span className="tile-title">Moderate Job Listings</span>
+              <span className="tile-sub">Job opening approvals</span>
+            </div>
+          </Link>
+
+          <Link to={ROUTES.ADMIN_REPORTS} className="gov-action-tile">
+            <FileSpreadsheet size={16} className="tile-icon" aria-hidden="true" />
+            <div className="tile-content">
+              <span className="tile-title">View Reports</span>
+              <span className="tile-sub">Audit & statistical exports</span>
+            </div>
+          </Link>
+
+          <Link to={ROUTES.ADMIN_SCHEME_CREATE} className="gov-action-tile highlight">
+            <PlusCircle size={16} className="tile-icon" aria-hidden="true" />
+            <div className="tile-content">
+              <span className="tile-title">Add New Scheme</span>
+              <span className="tile-sub">Publish welfare assistance</span>
+            </div>
           </Link>
         </div>
-      </div>
+      </section>
 
-      {/* Recent Activity Feeds Grid */}
-      <div className="admin-feeds-grid">
-        {/* Recent Veteran Registrations */}
-        <div className="admin-feed-card">
-          <div className="admin-feed-header">
-            <h3>Recent Veteran Registrations</h3>
-            <Link to={ROUTES.ADMIN_VETERANS} className="admin-feed-link">
-              View All ({stats?.veterans || 0})
-            </Link>
-          </div>
-          <div className="admin-feed-list">
-            {!stats?.recentActivity?.veterans || stats.recentActivity.veterans.length === 0 ? (
-              <div className="admin-feed-empty">No recent registrations found.</div>
-            ) : (
-              stats.recentActivity.veterans.map((v) => (
-                <div key={v.id} className="admin-feed-item">
-                  <div className="admin-feed-item-info">
-                    <strong>{v.personalInformation?.fullName || v.veteranId}</strong>
-                    <span>
-                      {v.serviceInformation?.serviceBranch || 'Defense'} • Rank: {v.serviceInformation?.rank || 'N/A'} • {v.personalInformation?.email || v.user?.email}
-                    </span>
-                  </div>
-                  <div className="admin-feed-item-badge">
-                    <Badge
-                      variant={
-                        v.verificationStatus === 'VERIFIED'
-                          ? 'success'
-                          : v.verificationStatus === 'REJECTED'
-                          ? 'danger'
-                          : 'warning'
-                      }
-                    >
-                      {v.verificationStatus}
-                    </Badge>
-                  </div>
+      {/* ==================================================================
+          5. RECENT ACTIVITY (INSTITUTIONAL AUDIT & LOGS)
+          ================================================================== */}
+      <section className="gov-activity-section" aria-label="Recent Portal Activity">
+        <div className="gov-section-header">
+          <h2 className="gov-section-title">RECENT PORTAL ACTIVITY</h2>
+          <span className="gov-section-meta">Official Real-Time Operational Log</span>
+        </div>
+
+        <div className="gov-activity-grid">
+          {/* Recent Veteran Registrations Table */}
+          <div className="gov-activity-card">
+            <div className="gov-activity-card-header">
+              <div className="card-header-left">
+                <Users size={16} className="card-header-icon" aria-hidden="true" />
+                <h3 className="card-header-title">Recent Veteran Registrations</h3>
+              </div>
+              <Link to={ROUTES.ADMIN_VETERANS} className="gov-view-all-link">
+                <span>View All ({stats?.veterans ?? 0})</span>
+                <ArrowRight size={12} aria-hidden="true" />
+              </Link>
+            </div>
+
+            <div className="gov-activity-body">
+              {!stats?.recentActivity?.veterans || stats.recentActivity.veterans.length === 0 ? (
+                <div className="gov-empty-feed">
+                  No recent registrations logged in the current audit period.
                 </div>
-              ))
-            )}
-          </div>
-        </div>
+              ) : (
+                <div className="gov-records-list">
+                  {stats.recentActivity.veterans.map((v) => (
+                    <div key={v.id || v._id} className="gov-record-item">
+                      <div className="gov-record-main">
+                        <div className="record-primary-row">
+                          <strong className="record-name">
+                            {v.personalInformation?.fullName || v.veteranId || 'Veteran Applicant'}
+                          </strong>
+                          {v.veteranId && (
+                            <span className="gov-id-tag">ID: {v.veteranId}</span>
+                          )}
+                        </div>
+                        <div className="record-secondary-row">
+                          <span>{v.serviceInformation?.serviceBranch || 'Armed Forces'}</span>
+                          <span className="record-dot" aria-hidden="true">•</span>
+                          <span>Rank: {v.serviceInformation?.rank || 'N/A'}</span>
+                          <span className="record-dot" aria-hidden="true">•</span>
+                          <span className="record-email">{v.personalInformation?.email || v.user?.email || 'N/A'}</span>
+                        </div>
+                      </div>
 
-        {/* Recent Scheme Applications */}
-        <div className="admin-feed-card">
-          <div className="admin-feed-header">
-            <h3>Recent Scheme Applications</h3>
-            <Link to={ROUTES.ADMIN_SCHEME_APPLICATIONS} className="admin-feed-link">
-              View All ({stats?.schemeApplications || 0})
-            </Link>
-          </div>
-          <div className="admin-feed-list">
-            {!stats?.recentActivity?.schemeApplications || stats.recentActivity.schemeApplications.length === 0 ? (
-              <div className="admin-feed-empty">No recent scheme claims submitted.</div>
-            ) : (
-              stats.recentActivity.schemeApplications.map((a) => (
-                <div key={a.id} className="admin-feed-item">
-                  <div className="admin-feed-item-info">
-                    <strong>{a.scheme?.name || 'Welfare Scheme'}</strong>
-                    <span>
-                      Applicant: {a.veteran?.personalInformation?.fullName || 'Veteran'} • ID: {a.applicationId}
-                    </span>
-                  </div>
-                  <div className="admin-feed-item-badge">
-                    <Badge
-                      variant={
-                        a.status === 'APPROVED'
-                          ? 'success'
-                          : a.status === 'REJECTED'
-                          ? 'danger'
-                          : a.status === 'UNDER_REVIEW'
-                          ? 'warning'
-                          : 'info'
-                      }
-                    >
-                      {a.status}
-                    </Badge>
-                  </div>
+                      <div className="gov-record-status">
+                        <Badge
+                          variant={
+                            v.verificationStatus === 'VERIFIED'
+                              ? 'success'
+                              : v.verificationStatus === 'REJECTED'
+                              ? 'danger'
+                              : 'warning'
+                          }
+                        >
+                          {v.verificationStatus}
+                        </Badge>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))
-            )}
+              )}
+            </div>
+          </div>
+
+          {/* Recent Scheme Applications Table */}
+          <div className="gov-activity-card">
+            <div className="gov-activity-card-header">
+              <div className="card-header-left">
+                <FileText size={16} className="card-header-icon" aria-hidden="true" />
+                <h3 className="card-header-title">Recent Scheme Applications</h3>
+              </div>
+              <Link to={ROUTES.ADMIN_SCHEME_APPLICATIONS} className="gov-view-all-link">
+                <span>View All ({stats?.schemeApplications ?? 0})</span>
+                <ArrowRight size={12} aria-hidden="true" />
+              </Link>
+            </div>
+
+            <div className="gov-activity-body">
+              {!stats?.recentActivity?.schemeApplications || stats.recentActivity.schemeApplications.length === 0 ? (
+                <div className="gov-empty-feed">
+                  No recent scheme applications logged in the current audit period.
+                </div>
+              ) : (
+                <div className="gov-records-list">
+                  {stats.recentActivity.schemeApplications.map((a) => (
+                    <div key={a.id || a._id} className="gov-record-item">
+                      <div className="gov-record-main">
+                        <div className="record-primary-row">
+                          <strong className="record-name">
+                            {a.scheme?.name || 'Welfare Assistance Grant'}
+                          </strong>
+                          {a.applicationId && (
+                            <span className="gov-id-tag">ID: {a.applicationId}</span>
+                          )}
+                        </div>
+                        <div className="record-secondary-row">
+                          <span>
+                            Applicant: {a.veteran?.personalInformation?.fullName || 'Defense Veteran'}
+                          </span>
+                          {a.createdAt && (
+                            <>
+                              <span className="record-dot" aria-hidden="true">•</span>
+                              <span className="record-date">
+                                <Calendar size={11} aria-hidden="true" />{' '}
+                                {new Date(a.createdAt).toLocaleDateString('en-GB')}
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="gov-record-status">
+                        <Badge
+                          variant={
+                            a.status === 'APPROVED' || a.status === 'DISBURSED'
+                              ? 'success'
+                              : a.status === 'REJECTED'
+                              ? 'danger'
+                              : a.status === 'UNDER_REVIEW'
+                              ? 'warning'
+                              : 'info'
+                          }
+                        >
+                          {a.status?.replace('_', ' ')}
+                        </Badge>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 };

@@ -22,13 +22,9 @@ import {
   Shield,
   ExternalLink,
   ChevronDown,
-  User,
-  CheckCircle,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.jsx';
 import { adminService } from '../services/adminService.js';
-import { socketService } from '../services/socketService.js';
-import { SOCKET_EVENTS } from '../constants/socketEvents.js';
 import { ROUTES } from '../constants/index.js';
 import NotificationBell from '../components/NotificationBell/NotificationBell.jsx';
 import Badge from '../components/Badge/Badge.jsx';
@@ -102,21 +98,47 @@ export const AdminLayout = () => {
     navigate(ROUTES.HOME);
   };
 
-  const navItems = [
-    { label: 'Dashboard', path: ROUTES.ADMIN_DASHBOARD, icon: LayoutDashboard },
-    { label: 'Veterans', path: ROUTES.ADMIN_VETERANS, icon: Users },
-    { label: 'Employers', path: ROUTES.ADMIN_EMPLOYERS, icon: Building2 },
-    { label: 'Welfare Schemes', path: ROUTES.ADMIN_SCHEMES, icon: Award },
-    { label: 'Job Moderation', path: ROUTES.ADMIN_JOBS, icon: Briefcase },
-    { label: 'Scheme Applications', path: ROUTES.ADMIN_SCHEME_APPLICATIONS, icon: FileText },
-    { label: 'Job Applications', path: ROUTES.ADMIN_JOB_APPLICATIONS, icon: Briefcase },
-    { label: 'Documents Vault', path: ROUTES.ADMIN_DOCUMENTS, icon: FileCheck2 },
-    { label: 'Portal Users', path: ROUTES.ADMIN_USERS, icon: Users },
-    { label: 'Reports & Export', path: ROUTES.ADMIN_REPORTS, icon: FileSpreadsheet },
-    { label: 'Analytics & KPIs', path: ROUTES.ADMIN_ANALYTICS, icon: BarChart3 },
-    { label: 'Audit Trail', path: ROUTES.ADMIN_AUDIT_LOGS, icon: ShieldAlert },
-    { label: 'Notifications', path: ROUTES.ADMIN_NOTIFICATIONS, icon: Bell },
-    { label: 'System Settings', path: ROUTES.ADMIN_SETTINGS, icon: Settings },
+  // Structured government navigation groups
+  const navigationGroups = [
+    {
+      groupTitle: 'OVERVIEW',
+      items: [
+        { label: 'Dashboard', path: ROUTES.ADMIN_DASHBOARD, icon: LayoutDashboard },
+      ],
+    },
+    {
+      groupTitle: 'REGISTRATION & VERIFICATION',
+      items: [
+        { label: 'Veterans', path: ROUTES.ADMIN_VETERANS, icon: Users },
+        { label: 'Employers', path: ROUTES.ADMIN_EMPLOYERS, icon: Building2 },
+        { label: 'Documents Vault', path: ROUTES.ADMIN_DOCUMENTS, icon: FileCheck2 },
+      ],
+    },
+    {
+      groupTitle: 'SERVICES & WELFARE',
+      items: [
+        { label: 'Welfare Schemes', path: ROUTES.ADMIN_SCHEMES, icon: Award },
+        { label: 'Scheme Applications', path: ROUTES.ADMIN_SCHEME_APPLICATIONS, icon: FileText },
+        { label: 'Job Moderation', path: ROUTES.ADMIN_JOBS, icon: Briefcase },
+        { label: 'Job Applications', path: ROUTES.ADMIN_JOB_APPLICATIONS, icon: Briefcase },
+      ],
+    },
+    {
+      groupTitle: 'GOVERNANCE & AUDIT',
+      items: [
+        { label: 'Portal Users', path: ROUTES.ADMIN_USERS, icon: Users },
+        { label: 'Reports & Export', path: ROUTES.ADMIN_REPORTS, icon: FileSpreadsheet },
+        { label: 'Analytics & KPIs', path: ROUTES.ADMIN_ANALYTICS, icon: BarChart3 },
+        { label: 'Audit Trail', path: ROUTES.ADMIN_AUDIT_LOGS, icon: ShieldAlert },
+      ],
+    },
+    {
+      groupTitle: 'ADMINISTRATION',
+      items: [
+        { label: 'Notifications', path: ROUTES.ADMIN_NOTIFICATIONS, icon: Bell },
+        { label: 'System Settings', path: ROUTES.ADMIN_SETTINGS, icon: Settings },
+      ],
+    },
   ];
 
   const totalResultsCount = searchResults
@@ -131,21 +153,25 @@ export const AdminLayout = () => {
     <div className={`admin-root ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
       {/* Mobile Backdrop */}
       {mobileDrawerOpen && (
-        <div className="admin-mobile-backdrop" onClick={() => setMobileDrawerOpen(false)} />
+        <div
+          className="admin-mobile-backdrop"
+          onClick={() => setMobileDrawerOpen(false)}
+          aria-hidden="true"
+        />
       )}
 
-      {/* Sidebar */}
-      <aside className={`admin-sidebar ${mobileDrawerOpen ? 'drawer-open' : ''}`}>
-        {/* Sidebar Header */}
+      {/* Government Institutional Sidebar */}
+      <aside className={`admin-sidebar ${mobileDrawerOpen ? 'drawer-open' : ''}`} aria-label="Administrative Navigation">
+        {/* Sidebar Header with Institutional Branding */}
         <div className="admin-sidebar-header">
           <Link to={ROUTES.ADMIN_DASHBOARD} className="admin-brand-link">
             <div className="admin-brand-icon">
-              <Shield size={22} />
+              <Shield size={20} strokeWidth={2.4} />
             </div>
             {!sidebarCollapsed && (
               <div className="admin-brand-text">
-                <span className="admin-brand-title">Admin Console</span>
-                <span className="admin-brand-subtitle">Gov Portal GovOS</span>
+                <span className="admin-brand-title">VBR PORTAL</span>
+                <span className="admin-brand-subtitle">Veterans Benefits & Resettlement</span>
               </div>
             )}
           </Link>
@@ -154,32 +180,40 @@ export const AdminLayout = () => {
             className="admin-sidebar-collapse-btn"
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
             title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
             {sidebarCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
           </button>
         </div>
 
-        {/* Navigation List */}
+        {/* Sidebar Nav with Section Headings */}
         <nav className="admin-sidebar-nav">
-          <ul className="admin-nav-list">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <li key={item.path}>
-                  <NavLink
-                    to={item.path}
-                    className={({ isActive }) =>
-                      `admin-nav-link ${isActive ? 'active' : ''}`
-                    }
-                    title={sidebarCollapsed ? item.label : undefined}
-                  >
-                    <Icon size={19} className="admin-nav-icon" />
-                    {!sidebarCollapsed && <span className="admin-nav-label">{item.label}</span>}
-                  </NavLink>
-                </li>
-              );
-            })}
-          </ul>
+          {navigationGroups.map((group) => (
+            <div key={group.groupTitle} className="admin-nav-group">
+              {!sidebarCollapsed && (
+                <div className="admin-nav-group-title">{group.groupTitle}</div>
+              )}
+              <ul className="admin-nav-list">
+                {group.items.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <li key={item.path}>
+                      <NavLink
+                        to={item.path}
+                        className={({ isActive }) =>
+                          `admin-nav-link ${isActive ? 'active' : ''}`
+                        }
+                        title={sidebarCollapsed ? item.label : undefined}
+                      >
+                        <Icon size={17} className="admin-nav-icon" aria-hidden="true" />
+                        {!sidebarCollapsed && <span className="admin-nav-label">{item.label}</span>}
+                      </NavLink>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ))}
         </nav>
 
         {/* Sidebar Footer */}
@@ -190,7 +224,7 @@ export const AdminLayout = () => {
             onClick={handleLogout}
             title={sidebarCollapsed ? 'Logout' : undefined}
           >
-            <LogOut size={19} className="admin-nav-icon" />
+            <LogOut size={17} className="admin-nav-icon" aria-hidden="true" />
             {!sidebarCollapsed && <span className="admin-nav-label">Logout</span>}
           </button>
         </div>
@@ -198,8 +232,8 @@ export const AdminLayout = () => {
 
       {/* Main Content Area */}
       <div className="admin-main-wrapper">
-        {/* Top Header */}
-        <header className="admin-topbar">
+        {/* Top Government Institutional Header */}
+        <header className="admin-topbar" role="banner">
           <div className="admin-topbar-left">
             <button
               type="button"
@@ -207,13 +241,13 @@ export const AdminLayout = () => {
               onClick={() => setMobileDrawerOpen(!mobileDrawerOpen)}
               aria-label="Toggle navigation drawer"
             >
-              {mobileDrawerOpen ? <X size={22} /> : <Menu size={22} />}
+              {mobileDrawerOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
 
             {/* Global Search with Live Dropdown */}
             <div className="admin-search-container" ref={searchContainerRef}>
               <div className="admin-search-input-wrapper">
-                <Search size={17} className="admin-search-icon" />
+                <Search size={16} className="admin-search-icon" aria-hidden="true" />
                 <input
                   type="text"
                   className="admin-search-input"
@@ -223,13 +257,14 @@ export const AdminLayout = () => {
                   onFocus={() => {
                     if (searchResults && totalResultsCount > 0) setSearchDropdownOpen(true);
                   }}
+                  aria-label="Global portal search"
                 />
-                {searchLoading && <span className="admin-search-spinner" />}
+                {searchLoading && <span className="admin-search-spinner" aria-hidden="true" />}
               </div>
 
               {/* Search Results Dropdown */}
               {searchDropdownOpen && searchResults && (
-                <div className="admin-search-dropdown">
+                <div className="admin-search-dropdown" role="region" aria-label="Search results">
                   {totalResultsCount === 0 ? (
                     <div className="admin-search-empty">
                       No matching records found for "{searchQuery}"
@@ -354,14 +389,18 @@ export const AdminLayout = () => {
 
           {/* Topbar Controls */}
           <div className="admin-topbar-right">
-            {/* View Live Portal shortcut */}
+            {/* View Public Portal Link */}
             <Link to={ROUTES.HOME} className="admin-portal-link" target="_blank" title="Open Public Portal">
               <span>View Portal</span>
-              <ExternalLink size={14} />
+              <ExternalLink size={13} aria-hidden="true" />
             </Link>
+
+            <div className="admin-topbar-divider" aria-hidden="true" />
 
             {/* Notification Bell */}
             <NotificationBell />
+
+            <div className="admin-topbar-divider" aria-hidden="true" />
 
             {/* Admin Profile Dropdown */}
             <div className="admin-profile-menu-container" ref={profileDropdownRef}>
@@ -370,6 +409,7 @@ export const AdminLayout = () => {
                 className="admin-profile-pill"
                 onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
                 aria-expanded={profileDropdownOpen}
+                aria-label="Administrator account menu"
               >
                 <div className="admin-avatar">
                   {user?.name ? user.name.charAt(0).toUpperCase() : 'A'}
@@ -378,39 +418,42 @@ export const AdminLayout = () => {
                   <span className="admin-name">{user?.name || 'Administrator'}</span>
                   <span className="admin-role-badge">SUPER ADMIN</span>
                 </div>
-                <ChevronDown size={14} className="admin-dropdown-chevron" />
+                <ChevronDown size={13} className="admin-dropdown-chevron" aria-hidden="true" />
               </button>
 
               {profileDropdownOpen && (
-                <div className="admin-profile-dropdown">
+                <div className="admin-profile-dropdown" role="menu">
                   <div className="admin-profile-dropdown-header">
-                    <strong>{user?.name}</strong>
+                    <strong>{user?.name || 'Central Administrator'}</strong>
                     <span>{user?.email}</span>
                   </div>
                   <hr className="admin-divider" />
                   <Link
                     to={ROUTES.ADMIN_SETTINGS}
                     className="admin-dropdown-item"
+                    role="menuitem"
                     onClick={() => setProfileDropdownOpen(false)}
                   >
-                    <Settings size={16} />
-                    <span>Account Settings</span>
+                    <Settings size={15} />
+                    <span>System Settings</span>
                   </Link>
                   <Link
                     to={ROUTES.ADMIN_AUDIT_LOGS}
                     className="admin-dropdown-item"
+                    role="menuitem"
                     onClick={() => setProfileDropdownOpen(false)}
                   >
-                    <ShieldAlert size={16} />
+                    <ShieldAlert size={15} />
                     <span>Audit Trail</span>
                   </Link>
                   <hr className="admin-divider" />
                   <button
                     type="button"
                     className="admin-dropdown-item admin-dropdown-logout"
+                    role="menuitem"
                     onClick={handleLogout}
                   >
-                    <LogOut size={16} />
+                    <LogOut size={15} />
                     <span>Sign Out</span>
                   </button>
                 </div>
@@ -420,7 +463,7 @@ export const AdminLayout = () => {
         </header>
 
         {/* Page Main Content */}
-        <main className="admin-content-canvas">
+        <main className="admin-content-canvas" id="admin-main-content">
           <Outlet />
         </main>
       </div>
